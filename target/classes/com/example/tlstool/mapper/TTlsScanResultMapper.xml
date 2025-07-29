@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.tlstool.mapper.TTlsScanResultMapper">
+
+    <resultMap id="BaseResultMap" type="com.example.tlstool.po.TTlsScanResult">
+            <id property="id" column="id" />
+            <result property="taskId" column="task_id" />
+            <result property="target" column="target" />
+            <result property="createTime" column="create_time" />
+            <result property="endTime" column="end_time" />
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,task_id,target,create_time,end_time
+    </sql>
+</mapper>

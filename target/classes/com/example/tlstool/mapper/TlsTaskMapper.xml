@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.tlstool.mapper.TlsTaskMapper">
+
+    <resultMap id="BaseResultMap" type="com.example.tlstool.entity.po.TlsTaskPO">
+            <id property="id" column="id" />
+            <id property="taskName" column="task_name" />
+            <result property="detectionTool" column="detection_tool" />
+            <result property="tlsProtocol" column="tls_protocol" />
+            <result property="mailProtocol" column="mail_protocol" />
+            <result property="isHttpSecurityHeaderDetection" column="is_http_security_header_detection" />
+            <result property="version" column="version" />
+            <result property="isCreateReport" column="is_create_report" />
+            <result property="progress" column="progress" />
+            <result property="state" column="state" />
+            <result property="createBy" column="create_by" />
+            <result property="createTime" column="create_time" />
+            <result property="endTime" column="end_time" />
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,task_name,detection_tool,tls_protocol,mail_protocol,is_http_security_header_detection,
+        version,is_create_report,progress,state,create_by,
+        create_time,end_time
+    </sql>
+</mapper>

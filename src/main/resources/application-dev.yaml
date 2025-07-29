@@ -1,0 +1,89 @@
+spring:
+  server:
+    port: 9082
+    servlet:
+      session:
+        cookie:
+          name: jsessionid-sc
+          http-only: true
+  main:
+    allow-circular-references: true
+  datasource:
+    mysql:
+      driver-class-name: com.mysql.cj.jdbc.Driver
+      url: jdbc:mysql://10.101.24.31:3306/satellite?characterEncoding=UTF-8&useUnicode=true&serverTimezone=GMT%2B8&allowPublicKeyRetrieval=true
+      username: root
+      password: 123456
+      type: com.alibaba.druid.pool.DruidDataSource
+      # Druid连接池配置
+      druid:
+        initial-size: 5
+        min-idle: 5
+        max-active: 20
+        max-wait: 60000
+        time-between-eviction-runs-millis: 60000
+        min-evictable-idle-time-millis: 300000
+        validation-query: SELECT 1
+        test-while-idle: true
+        test-on-borrow: false
+        test-on-return: false
+        pool-prepared-statements: true
+        max-pool-prepared-statement-per-connection-size: 20
+        filters: stat,wall,slf4j
+        use-global-data-source-stat: true
+        connection-properties: druid.stat.mergeSql=true;druid.stat.slowSqlMillis=500
+
+#  jackson:
+#    #ge shi hua yyyy-MM-dd HH:mm:ss
+#    date-format: yyyy-MM-dd HH:mm:ss
+#    #zhi ding shi qu
+#    time-zone: GMT+8
+#  servlet:
+#    multipart:
+#      max-request-size: 500MB
+#      max-file-size: 500MB
+#  application:
+#    name: satellite-admin
+#mybatis-plus:
+#  # configuration:
+#  # log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+#  mapper-locations: classpath*:/mapper/**/*Mapper.xml
+#  global-config:
+#    db-config:
+#      id-type: ASSIGN_ID
+##  configuration:
+##    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+#server:
+#  port: 10010
+#  servlet:
+#    context-path: /satellite-admin
+#logging:
+#  #  file:
+#  #    name: logs/logs.log
+#  level:
+#    web: info
+#    sql: info
+#    root: info
+#    com.dbapp.satellite.admin.service.impl: debug
+#
+#springdoc:
+#  api-docs:
+#    enabled: true # 是否开启
+#    path: '/docs'
+#  swagger-ui:
+#    path: ''
+#
+#file:
+#  upload: D:\Program\Project\GS\AnHeng\flies\
+#
+#vulnScan:
+#  baseUrl: http://10.101.24.65:8085
+#  userName: test3
+#  password: Test123!@#
+#
+#scaScan:
+#  baseUrl: http://10.101.24.5:7002
+#  projectId: 1948314954220118017
+#  userName: admin
+#  password: R4eOahwjzYVVowM
+#
