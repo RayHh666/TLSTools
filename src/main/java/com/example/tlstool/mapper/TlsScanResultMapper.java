@@ -10,6 +10,7 @@ import org.apache.ibatis.annotations.Mapper;
 * @createDate 2025-07-28 18:32:18
 * @Entity com.example.tlstool.po.TTlsScanResult
 */
+
 @Mapper
 public interface TlsScanResultMapper extends BaseMapper<TlsScanResultPO> {
 

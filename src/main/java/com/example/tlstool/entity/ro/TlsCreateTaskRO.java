@@ -18,17 +18,17 @@ public class TlsCreateTaskRO {
     /**
      * 扫描目标 多个目标以逗号分隔
      */
-    private String target;
+    private String targets;
 
     /**
      * TLS协议 多个协议以逗号分割
      */
-    private String tlsProtocol;
+    private String tlsProtocols;
 
     /**
      * 邮件协议 多个协议以逗号分割
      */
-    private String mailProtocol;
+    private String mailProtocols;
 
     /**
      * 是否开启HTTP安全头协议检测 0-否 1-是

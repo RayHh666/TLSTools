@@ -113,13 +113,14 @@ public class SslyzeUtils {
         }
     }
 
-    public static JsonNode parseJsonOutput(String target, String command) throws Exception {
+    public static JsonNode getSslyzeJsonOutput(String target, String command) throws Exception {
 
         if(StringUtils.isBlank(command)){
             command = "-O";
         }
         String sslyzeCommand = "sslyze" + command + " --json_out -  " + target;
 
+        log.info("sslyzeCommand: {}", sslyzeCommand);
         JsonNode jsonRoot = null;
         try {
             JsonFactory factory = new ObjectMapper().getFactory();
@@ -130,8 +131,9 @@ public class SslyzeUtils {
 
            if (osName.contains("windows")) {
                 //windowssystem
+                sslyzeCommand = "python -m" + sslyzeCommand;
                 builder.command("cmd", "/c", sslyzeCommand);
-            }else {
+            } else {
                 //Other systems
                 builder.command("bash", "-c", sslyzeCommand);
             }
@@ -142,6 +144,7 @@ public class SslyzeUtils {
 
             JsonParser parser = factory.createParser(process.getInputStream());
             jsonRoot = parser.readValueAsTree();
+            log.info("jsonRoot: {}", jsonRoot);
         } catch (Exception e) {
             e.printStackTrace();
         }

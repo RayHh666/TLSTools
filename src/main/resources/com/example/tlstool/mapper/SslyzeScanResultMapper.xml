@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.tlstool.mapper.ScanToolMapper.SslyzeScanResultMapper">
+
+    <resultMap id="BaseResultMap" type="com.example.tlstool.entity.po.ScanToolPO.SslyzeScanResultPO">
+            <id property="uuid" column="uuid" />
+            <result property="serverLocation" column="server_location" typeHandler="com.example.tlstool.handler.JsonNodeTypeHandler" />
+            <result property="networkConfiguration" column="network_configuration" typeHandler="com.example.tlstool.handler.JsonNodeTypeHandler" />
+            <result property="connectivityStatus" column="connectivity_status" />
+            <result property="connectivityErrorTrace" column="connectivity_error_trace" />
+            <result property="connectivityResult" column="connectivity_result" typeHandler="com.example.tlstool.handler.JsonNodeTypeHandler" />
+            <result property="scanStatus" column="scan_status" />
+            <result property="certificateInfo" column="certificate_info" typeHandler="com.example.tlstool.handler.JsonNodeTypeHandler" />
+            <result property="ssl20CipherSuites" column="ssl_2_0_cipher_suites" typeHandler="com.example.tlstool.handler.JsonNodeTypeHandler" />
+            <result property="ssl30CipherSuites" column="ssl_3_0_cipher_suites" typeHandler="com.example.tlstool.handler.JsonNodeTypeHandler" />
+            <result property="tls10CipherSuites" column="tls_1_0_cipher_suites" typeHandler="com.example.tlstool.handler.JsonNodeTypeHandler" />
+            <result property="tls11CipherSuites" column="tls_1_1_cipher_suites" typeHandler="com.example.tlstool.handler.JsonNodeTypeHandler" />
+            <result property="tls12CipherSuites" column="tls_1_2_cipher_suites" typeHandler="com.example.tlstool.handler.JsonNodeTypeHandler" />
+            <result property="tls13CipherSuites" column="tls_1_3_cipher_suites" typeHandler="com.example.tlstool.handler.JsonNodeTypeHandler" />
+            <result property="tlsCompression" column="tls_compression" typeHandler="com.example.tlstool.handler.JsonNodeTypeHandler" />
+            <result property="tls13EarlyData" column="tls_1_3_early_data" typeHandler="com.example.tlstool.handler.JsonNodeTypeHandler" />
+            <result property="opensslCcsInjection" column="openssl_ccs_injection" typeHandler="com.example.tlstool.handler.JsonNodeTypeHandler" />
+            <result property="tlsFallbackScsv" column="tls_fallback_scsv" typeHandler="com.example.tlstool.handler.JsonNodeTypeHandler" />
+            <result property="heartbleed" column="heartbleed" typeHandler="com.example.tlstool.handler.JsonNodeTypeHandler" />
+            <result property="robot" column="robot" typeHandler="com.example.tlstool.handler.JsonNodeTypeHandler" />
+            <result property="sessionRenegotiation" column="session_renegotiation" typeHandler="com.example.tlstool.handler.JsonNodeTypeHandler" />
+            <result property="sessionResumption" column="session_resumption" typeHandler="com.example.tlstool.handler.JsonNodeTypeHandler" />
+            <result property="ellipticCurves" column="elliptic_curves" typeHandler="com.example.tlstool.handler.JsonNodeTypeHandler" />
+            <result property="httpHeaders" column="http_headers" typeHandler="com.example.tlstool.handler.JsonNodeTypeHandler" />
+            <result property="tlsExtendedMasterSecret" column="tls_extended_master_secret" typeHandler="com.example.tlstool.handler.JsonNodeTypeHandler" />
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        uuid,server_location,network_configuration,connectivity_status,connectivity_error_trace,connectivity_result,
+        scan_status,certificate_info,ssl_2_0_cipher_suites,ssl_3_0_cipher_suites,tls_1_0_cipher_suites,
+        tls_1_1_cipher_suites,tls_1_2_cipher_suites,tls_1_3_cipher_suites,tls_compression,tls_1_3_early_data,
+        openssl_ccs_injection,tls_fallback_scsv,heartbleed,robot,session_renegotiation,
+        session_resumption,elliptic_curves,http_headers,tls_extended_master_secret
+    </sql>
+</mapper>

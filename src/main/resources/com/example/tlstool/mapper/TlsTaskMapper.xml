@@ -8,21 +8,23 @@
             <id property="id" column="id" />
             <id property="taskName" column="task_name" />
             <result property="detectionTool" column="detection_tool" />
-            <result property="tlsProtocol" column="tls_protocol" />
-            <result property="mailProtocol" column="mail_protocol" />
+            <result property="tlsProtocols" column="tls_protocols" />
+            <result property="mailProtocols" column="mail_protocols" />
             <result property="isHttpSecurityHeaderDetection" column="is_http_security_header_detection" />
-            <result property="version" column="version" />
-            <result property="isCreateReport" column="is_create_report" />
             <result property="progress" column="progress" />
             <result property="state" column="state" />
+            <result property="invalidServerStrings" column="invalid_server_strings" jdbcType="OTHER" typeHandler="com.example.tlstool.handler.JsonNodeTypeHandler" />
             <result property="createBy" column="create_by" />
             <result property="createTime" column="create_time" />
-            <result property="endTime" column="end_time" />
+            <result property="dateScansStarted" column="date_scans_started" />
+            <result property="dateScansCompleted" column="date_scans_completed" />
+            <result property="detectionToolVersion" column="detection_tool_version" />
+            <result property="remark" column="remark" />
     </resultMap>
 
     <sql id="Base_Column_List">
-        id,task_name,detection_tool,tls_protocol,mail_protocol,is_http_security_header_detection,
-        version,is_create_report,progress,state,create_by,
-        create_time,end_time
+        id,task_name,detection_tool,tls_protocols,mail_protocols,is_http_security_header_detection,
+        progress,state,invalid_server_strings,create_by,
+        create_time,date_scans_started,date_scans_completed,detection_tool_version,remark
     </sql>
 </mapper>
