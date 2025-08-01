@@ -24,7 +24,7 @@ public class TlsTaskServiceImpl extends ServiceImpl<TlsTaskMapper, TlsTaskPO>
     private SslyzeScanResultService sslyzeScanResultService;
 
     @Override
-    public Boolean createTask(TlsCreateTaskRO tlsCreateTaskRO) throws Exception{
+    public void createTask(TlsCreateTaskRO tlsCreateTaskRO) throws Exception{
 
         TlsTaskPO tlsTaskPO = new TlsTaskPO().builder()
                 .taskName(tlsCreateTaskRO.getTaskName())
@@ -39,7 +39,6 @@ public class TlsTaskServiceImpl extends ServiceImpl<TlsTaskMapper, TlsTaskPO>
                 .build();
         baseMapper.insert(tlsTaskPO);
         sslyzeScanResultService.createSslyzeTask(tlsCreateTaskRO, tlsTaskPO);
-        return true;
     }
 }
 

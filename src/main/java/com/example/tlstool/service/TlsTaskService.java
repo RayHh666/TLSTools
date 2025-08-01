@@ -11,5 +11,5 @@ import com.example.tlstool.entity.ro.TlsCreateTaskRO;
 */
 public interface TlsTaskService extends IService<TlsTaskPO> {
 
-    Boolean createTask (TlsCreateTaskRO tlsCreateTaskRO) throws Exception;
+    void createTask (TlsCreateTaskRO tlsCreateTaskRO) throws Exception;
 }
