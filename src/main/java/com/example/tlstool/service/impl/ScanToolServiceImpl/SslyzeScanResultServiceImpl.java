@@ -46,14 +46,14 @@ public class SslyzeScanResultServiceImpl extends ServiceImpl<SslyzeScanResultMap
             }
         }
 
-        if (StringUtils.isNotBlank(tlsCreateTaskRO.getMailProtocols())) {
-            Set<String> mailProtocolSet = new HashSet<>(Arrays.asList(tlsCreateTaskRO.getMailProtocols().split(",")));
+        if (StringUtils.isNotBlank(tlsCreateTaskRO.getStarttlsMailProtocol())) {
+            Set<String> mailProtocolSet = new HashSet<>(Arrays.asList(tlsCreateTaskRO.getStarttlsMailProtocol().split(",")));
             for (String mailProtocol: mailProtocolSet) {
                 sslyzeCommand = sslyzeCommand + " --" + mailProtocol;
             }
         }
 
-        JsonNode jsonRoot = SslyzeUtils.getSslyzeJsonOutput(targetsStr, sslyzeCommand);
+        JsonNode jsonRoot = SslyzeUtils.getSslyzeJsonOutput(sslyzeCommand, targetsStr);
 
         // 更新扫描任务数据
         JsonNode invalidServerStrings = jsonRoot.get("invalid_server_strings");

@@ -26,9 +26,14 @@ public class TlsCreateTaskRO {
     private String tlsProtocols;
 
     /**
-     * 邮件协议 多个协议以逗号分割
+     * 邮件协议（单选）  smtp, xmpp, xmpp_server, pop3, imap, ftp, ldap, rdp, postgres
      */
-    private String mailProtocols;
+    private String starttlsMailProtocol;
+
+    /**
+     * 任务类型: 'TLS_SCAN','HTTP_SCAN','STARTTLS_SCAN'
+     */
+    private String taskType;
 
     /**
      * 是否开启HTTP安全头协议检测 0-否 1-是

@@ -2,6 +2,8 @@ package com.example.tlstool.util;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
+import java.util.LinkedList;
+import java.util.List;
 
 import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonParser;
@@ -113,17 +115,19 @@ public class SslyzeUtils {
         }
     }
 
-    public static JsonNode getSslyzeJsonOutput(String target, String command) throws Exception {
+    public static JsonNode getSslyzeJsonOutput(String command, String target) throws Exception {
 
         if(StringUtils.isBlank(command)){
             command = "-O";
         }
-        String sslyzeCommand = "sslyze" + command + " --json_out -  " + target;
+        String sslyzeCommand = "sslyze --slow_connection" + command + " --json_out -  " + target;
 
         log.info("sslyzeCommand: {}", sslyzeCommand);
         JsonNode jsonRoot = null;
         try {
-            JsonFactory factory = new ObjectMapper().getFactory();
+            StringBuilder result = new StringBuilder();
+//            JsonFactory factory = new ObjectMapper().getFactory();
+            ObjectMapper mapper = new ObjectMapper();
 
             ProcessBuilder builder = new ProcessBuilder();
 
@@ -133,27 +137,66 @@ public class SslyzeUtils {
                 //windowssystem
                 sslyzeCommand = "python -m" + sslyzeCommand;
                 builder.command("cmd", "/c", sslyzeCommand);
-            } else {
-                //Other systems
-                builder.command("bash", "-c", sslyzeCommand);
-            }
+           } else {
+               //Other systems
+               builder.command("bash", "-c", sslyzeCommand);
+           }
 
             //Standard errors will be merged with standard outputs
             builder.redirectErrorStream(true);
             Process process = builder.start();
 
-            JsonParser parser = factory.createParser(process.getInputStream());
-            jsonRoot = parser.readValueAsTree();
-            log.info("jsonRoot: {}", jsonRoot);
+            BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream(),"GBK"));
+            String line;
+            while ((line = reader.readLine()) != null) {
+                result.append(line);
+            }
+
+            int startIndex = result.indexOf("{  \"invalid_server_strings\"");
+            if (startIndex != -1) {
+                result.delete(0, startIndex);
+                String jsonString = result.toString();
+                log.info("result: {}", jsonString);
+                jsonRoot = mapper.readTree(jsonString);
+            }
+//            JsonParser parser = factory.createParser(process.getInputStream());
+//            jsonRoot = parser.readValueAsTree();
+            process.waitFor();
         } catch (Exception e) {
             e.printStackTrace();
         }
         return jsonRoot;
     }
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws Exception {
 //        String osName = System.getProperty("os.name").toLowerCase();
 //        System.out.println(osName);
 //        getScanData("10.101.24.31", "ping");
+        StringBuilder result = new StringBuilder();
+        JsonFactory factory = new ObjectMapper().getFactory();
+
+        JsonNode jsonRoot = null;
+        ProcessBuilder builder = new ProcessBuilder();
+        builder.command("cmd", "/c", "python -m sslyze --slow_connection --tlsv1_2 --tlsv1_1 --sslv3 --tlsv1_3 --heartbleed --robot --compression --elliptic_curves --openssl_ccs --certinfo --json_out - example.com github.com baidu.com");
+        //Standard errors will be merged with standard outputs
+        builder.redirectErrorStream(true);
+        Process process = builder.start();
+
+//        JsonParser parser = factory.createParser(process.getInputStream());
+//        jsonRoot = parser.readValueAsTree();
+
+        BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream(),"GBK"));
+        String line;
+        while ((line = reader.readLine()) != null) {
+            result.append(line);
+        }
+
+        int startIndex = result.indexOf("{  \"invalid_server_strings\"");
+        if (startIndex != -1) {
+            result.delete(0, startIndex);
+        }
+
+        process.waitFor();
+        log.info("result: {}", result);
     }
 }

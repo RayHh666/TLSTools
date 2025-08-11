@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.tlstool.mapper.ToolRawResultMapper">
+
+    <resultMap id="BaseResultMap" type="com.example.tlstool.entity.po.ToolRawResultPO">
+            <id property="resultId" column="result_id" />
+            <result property="taskId" column="task_id" />
+            <result property="toolName" column="tool_name" />
+            <result property="toolVersion" column="tool_version" />
+            <result property="outputFormat" column="output_format" />
+            <result property="rawData" column="raw_data" />
+            <result property="parsed" column="parsed" />
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        result_id,task_id,tool_name,tool_version,output_format,raw_data,
+        parsed
+    </sql>
+</mapper>

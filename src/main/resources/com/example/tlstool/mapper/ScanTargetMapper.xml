@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.tlstool.mapper.ScanTargetMapper">
+
+    <resultMap id="BaseResultMap" type="com.example.tlstool.entity.po.ScanTargetPO">
+            <id property="targetId" column="target_id" />
+            <result property="taskId" column="task_id" />
+            <result property="host" column="host" />
+            <result property="port" column="port" />
+            <result property="resolvedIp" column="resolved_ip" />
+            <result property="connectionType" column="connection_type" />
+            <result property="proxySettings" column="proxy_settings" typeHandler="com.example.tlstool.handler.JsonNodeTypeHandler" />
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        target_id,task_id,host,port,resolved_ip,connection_type,
+        proxy_settings
+    </sql>
+</mapper>

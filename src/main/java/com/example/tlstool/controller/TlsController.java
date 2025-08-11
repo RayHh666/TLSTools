@@ -1,15 +1,14 @@
 package com.example.tlstool.controller;
 
 import com.example.tlstool.entity.ro.TlsCreateTaskRO;
+import com.example.tlstool.service.ScanTaskService;
 import com.example.tlstool.service.TlsTaskService;
 import com.example.tlstool.util.Result;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import java.util.Set;
 
 @RestController
 @RequestMapping("/tls")
@@ -22,6 +21,9 @@ public class TlsController {
 
     @Resource
     private TlsTaskService tlsTaskService;
+
+    @Resource
+    private ScanTaskService scanTaskService;
 
 //    @PostMapping("/create")
 //    public Result createTask(@RequestBody TlsCreateTaskRO tlsCreateTaskRO){
@@ -36,11 +38,19 @@ public class TlsController {
     @PostMapping("/create")
     public Result createTask(@RequestBody TlsCreateTaskRO tlsCreateTaskRO){
         try {
-            tlsTaskService.createTask(tlsCreateTaskRO);
-            return Result.success();
+            Long taskId = scanTaskService.createTask(tlsCreateTaskRO);
+            return Result.success(taskId);
         } catch (Exception e) {
             log.error(e.toString());
+            e.printStackTrace();
             return Result.error(e.getMessage());
         }
     }
+
+//    @GetMapping("/protocol_info")
+//    public Result getProtocolInfo(Long taskId){
+//        try {
+//
+//        }
+//    }
 }

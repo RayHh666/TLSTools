@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.tlstool.mapper.ScanTaskMapper">
+
+    <resultMap id="BaseResultMap" type="com.example.tlstool.entity.po.ScanTaskPO">
+            <id property="taskId" column="task_id" />
+            <result property="taskName" column="task_name" />
+            <result property="taskType" column="task_type" />
+            <result property="toolName" column="tool_name" />
+            <result property="toolVersion" column="tool_version" />
+            <result property="status" column="status" />
+            <result property="remark" column="remark" />
+            <result property="createdAt" column="created_at" />
+            <result property="startedAt" column="started_at" />
+            <result property="completedAt" column="completed_at" />
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        task_id,task_name,task_type,tool_name,tool_version,status,remark,created_at,
+        started_at,completed_at
+    </sql>
+</mapper>

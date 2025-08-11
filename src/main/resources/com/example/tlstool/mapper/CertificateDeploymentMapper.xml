@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.tlstool.mapper.CertificateDeploymentMapper">
+
+    <resultMap id="BaseResultMap" type="com.example.tlstool.entity.po.CertificateDeploymentPO">
+            <id property="certificateDeploymentId" column="certificate_deployment_id" />
+            <result property="targetId" column="target_id" />
+            <result property="leafCertificateHasMustStapleExtension" column="leaf_certificate_has_must_staple_extension" />
+            <result property="leafCertificateIsEv" column="leaf_certificate_is_ev" />
+            <result property="leafCertificateSignedCertificateTimestampsCount" column="leaf_certificate_signed_certificate_timestamps_count" />
+            <result property="receivedChainContainsAnchorCertificate" column="received_chain_contains_anchor_certificate" />
+            <result property="receivedChainHasValidOrder" column="received_chain_has_valid_order" />
+            <result property="verifiedChainHasSha1Signature" column="verified_chain_has_sha1_signature" />
+            <result property="verifiedChainHasLegacySymantecAnchor" column="verified_chain_has_legacy_symantec_anchor" />
+            <result property="ocspResponseResponseStatus" column="ocsp_response_response_status" />
+            <result property="ocspResponseCertificateStatus" column="ocsp_response_certificate_status" />
+            <result property="ocspResponseRevocationTime" column="ocsp_response_revocation_time" />
+            <result property="ocspResponseProducedAt" column="ocsp_response_produced_at" />
+            <result property="ocspResponseThisUpdate" column="ocsp_response_this_update" />
+            <result property="ocspResponseNextUpdate" column="ocsp_response_next_update" />
+            <result property="ocspResponseSerialNumber" column="ocsp_response_serial_number" />
+            <result property="ocspResponseIsTrusted" column="ocsp_response_is_trusted" />
+            <result property="index" column="index" />
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        certificate_deployment_id,target_id,leaf_certificate_has_must_staple_extension,leaf_certificate_is_ev,leaf_certificate_signed_certificate_timestamps_count,received_chain_contains_anchor_certificate,
+        received_chain_has_valid_order,verified_chain_has_sha1_signature,verified_chain_has_legacy_symantec_anchor,ocsp_response_response_status,ocsp_response_certificate_status,
+        ocsp_response_revocation_time,ocsp_response_produced_at,ocsp_response_this_update,ocsp_response_next_update,ocsp_response_serial_number,
+        ocsp_response_is_trusted,index
+    </sql>
+</mapper>

@@ -31,7 +31,7 @@ public class TlsTaskServiceImpl extends ServiceImpl<TlsTaskMapper, TlsTaskPO>
                 .targets(tlsCreateTaskRO.getTargets())
                 .detectionTool(tlsCreateTaskRO.getDetectionTool())
                 .tlsProtocols(tlsCreateTaskRO.getTlsProtocols())
-                .mailProtocols(tlsCreateTaskRO.getMailProtocols())
+                .mailProtocols(tlsCreateTaskRO.getStarttlsMailProtocol())
                 .isHttpSecurityHeaderDetection(tlsCreateTaskRO.getIsHttpSecurityHeaderDetection())
                 .progress(0)
                 .state(2)

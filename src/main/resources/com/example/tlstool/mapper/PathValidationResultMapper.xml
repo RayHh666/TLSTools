@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.tlstool.mapper.PathValidationResultMapper">
+
+    <resultMap id="BaseResultMap" type="com.example.tlstool.entity.po.PathValidationResultPO">
+            <id property="pathValidationResultId" column="path_validation_result_id" />
+            <result property="certificateDeploymentId" column="certificate_deployment_id" />
+            <result property="trustStorePath" column="trust_store_path" />
+            <result property="trustStoreName" column="trust_store_name" />
+            <result property="trustStoreVersion" column="trust_store_version" />
+            <result property="validationError" column="validation_error" />
+            <result property="wasValidationSuccessful" column="was_validation_successful" />
+            <result property="trustStoreEvOids" column="trust_store_ev_oids" />
+            <result property="index" column="index" />
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        path_validation_result_id,certificate_deployment_id,trust_store_path,trust_store_name,trust_store_version,validation_error,
+        was_validation_successful,trust_store_ev_oids,index
+    </sql>
+</mapper>

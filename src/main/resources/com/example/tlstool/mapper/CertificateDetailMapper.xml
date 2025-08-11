@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.tlstool.mapper.CertificateDetailMapper">
+
+    <resultMap id="BaseResultMap" type="com.example.tlstool.entity.po.CertificateDetailPO">
+            <id property="certId" column="cert_id" />
+            <result property="asPem" column="as_pem" />
+            <result property="fingerprintSha1" column="fingerprint_sha1" />
+            <result property="fingerprintSha256" column="fingerprint_sha256" />
+            <result property="serialNumber" column="serial_number" />
+            <result property="notValidBefore" column="not_valid_before" />
+            <result property="notValidAfter" column="not_valid_after" />
+            <result property="signatureHashAlgorithmName" column="signature_hash_algorithm_name" />
+            <result property="signatureHashAlgorithmDigestSize" column="signature_hash_algorithm_digest_size" />
+            <result property="signatureAlgorithmOidName" column="signature_algorithm_oid_name" />
+            <result property="signatureAlgorithmOidDottedString" column="signature_algorithm_oid_dotted_string" />
+            <result property="subjectRfc4514String" column="subject_rfc4514_string" />
+            <result property="subjectCountry" column="subject_country" />
+            <result property="subjectState" column="subject_state" />
+            <result property="subjectLocality" column="subject_locality" />
+            <result property="subjectOrganization" column="subject_organization" />
+            <result property="subjectOrganizationalUnit" column="subject_organizational_unit" />
+            <result property="subjectCommonName" column="subject_common_name" />
+            <result property="issuerRfc4514String" column="issuer_rfc4514_string" />
+            <result property="issuerCountry" column="issuer_country" />
+            <result property="issuerState" column="issuer_state" />
+            <result property="issuerLocality" column="issuer_locality" />
+            <result property="issuerOrganization" column="issuer_organization" />
+            <result property="issuerOrganizationalUnit" column="issuer_organizational_unit" />
+            <result property="issuerCommonName" column="issuer_common_name" />
+            <result property="publicKeyAlgorithm" column="public_key_algorithm" />
+            <result property="publicKeyKeySize" column="public_key_key_size" />
+            <result property="publicKeyRsaE" column="public_key_rsa_e" />
+            <result property="publicKeyRsaN" column="public_key_rsa_n" />
+            <result property="publicKeyEcCurveName" column="public_key_ec_curve_name" />
+            <result property="publicKeyEcX" column="public_key_ec_x" />
+            <result property="publicKeyEcY" column="public_key_ec_y" />
+            <result property="subjectAlternativeName" column="subject_alternative_name" typeHandler="com.example.tlstool.handler.JsonNodeTypeHandler"/>
+            <result property="createdAt" column="created_at" />
+            <result property="certificateDeploymentId" column="certificate_deployment_id" />
+            <result property="pathValidationResultId" column="path_validation_result_id" />
+            <result property="index" column="index" />
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        cert_id,as_pem,fingerprint_sha1,fingerprint_sha256,serial_number,not_valid_before,
+        not_valid_after,signature_hash_algorithm_name,signature_hash_algorithm_digest_size,signature_algorithm_oid_name,signature_algorithm_oid_dotted_string,
+        subject_rfc4514_string,subject_country,subject_state,subject_locality,subject_organization,
+        subject_organizational_unit,subject_common_name,issuer_rfc4514_string,issuer_country,issuer_state,
+        issuer_locality,issuer_organization,issuer_organizational_unit,issuer_common_name,public_key_algorithm,
+        public_key_key_size,public_key_rsa_e,public_key_rsa_n,public_key_ec_curve_name,public_key_ec_x,
+        public_key_ec_y,subject_alternative_name,created_at,certificate_deployment_id,path_validation_result_id,
+        index
+    </sql>
+</mapper>
