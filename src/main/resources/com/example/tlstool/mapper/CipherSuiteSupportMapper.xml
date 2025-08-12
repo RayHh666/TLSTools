@@ -20,4 +20,16 @@
         cipher_id,target_id,tls_version,cipher_name,is_accepted,key_size,
         forward_secrecy,rating,openssl_name
     </sql>
+    <select id="getCipherSuiteInfoPageByTaskId" resultType="com.example.tlstool.entity.dto.CipherSuiteInfoDTO">
+        SELECT cipher_name AS cipherName,
+               is_accepted AS accepted,
+               key_size AS keySize,
+               forward_secrecy AS forwardSecrecy,
+               openssl_name AS opensslName
+        FROM cipher_suite_support
+                 LEFT JOIN scan_target ON cipher_suite_support.target_id = scan_target.target_id
+                 LEFT JOIN scan_task ON scan_task.task_id = scan_target.task_id
+        WHERE scan_task.task_id = #{taskId}
+        LIMIT #{offset}, #{size};
+    </select>
 </mapper>

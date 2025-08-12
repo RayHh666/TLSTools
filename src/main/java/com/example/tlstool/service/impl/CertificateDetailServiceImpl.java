@@ -1,6 +1,8 @@
 package com.example.tlstool.service.impl;
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.example.tlstool.entity.dto.CertificateInfoDTO;
 import com.example.tlstool.entity.po.CertificateDetailPO;
 import com.example.tlstool.service.CertificateDetailService;
 import com.example.tlstool.mapper.CertificateDetailMapper;
@@ -10,6 +12,7 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 /**
 * @author admin
@@ -122,6 +125,11 @@ public class CertificateDetailServiceImpl extends ServiceImpl<CertificateDetailM
                 index++;
             }
         }
+    }
+
+    public List<CertificateInfoDTO> getCertificateInfoPage(Long taskId, int page, int size) {
+        int offset = (page - 1) * size;
+        return baseMapper.getCertificateInfoPageByTaskId(taskId, offset, size);
     }
 }
 

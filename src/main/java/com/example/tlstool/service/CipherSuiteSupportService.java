@@ -1,8 +1,12 @@
 package com.example.tlstool.service;
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.example.tlstool.entity.dto.CipherSuiteInfoDTO;
 import com.example.tlstool.entity.po.CipherSuiteSupportPO;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.fasterxml.jackson.databind.JsonNode;
+
+import java.util.List;
 
 /**
 * @author admin
@@ -11,4 +15,6 @@ import com.fasterxml.jackson.databind.JsonNode;
 */
 public interface CipherSuiteSupportService extends IService<CipherSuiteSupportPO> {
     void saveCipherSuiteSupportInfo(JsonNode cipherSuiteSupportInfo, Long targetId);
+
+    List<CipherSuiteInfoDTO> getCipherSuiteInfoPage(Long taskId, int page, int size);
 }

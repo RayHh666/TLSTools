@@ -6,9 +6,6 @@ import com.example.tlstool.entity.po.ScanTaskPO;
 import com.example.tlstool.entity.ro.TlsCreateTaskRO;
 import com.example.tlstool.service.*;
 import com.example.tlstool.mapper.ScanTaskMapper;
-import com.example.tlstool.util.DateTimeUtils;
-import com.example.tlstool.util.SslyzeUtils;
-import com.fasterxml.jackson.databind.JsonNode;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.scheduling.annotation.Async;
@@ -19,7 +16,6 @@ import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 /**
@@ -96,7 +92,7 @@ public class ScanTaskServiceImpl extends ServiceImpl<ScanTaskMapper, ScanTaskPO>
                 .eq(ScanTaskPO::getTaskId, taskId)
                 .set(ScanTaskPO::getToolName, "curl")
                 .set(ScanTaskPO::getCompletedAt, LocalDateTime.now());
-        baseMapper.update(updateWrapper);
+        baseMapper.update(null, updateWrapper);
     }
 }
 

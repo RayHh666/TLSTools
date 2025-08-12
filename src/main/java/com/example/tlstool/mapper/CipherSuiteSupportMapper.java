@@ -1,8 +1,14 @@
 package com.example.tlstool.mapper;
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.example.tlstool.entity.dto.CipherSuiteInfoDTO;
+import com.example.tlstool.entity.dto.ProtocolInfoDTO;
 import com.example.tlstool.entity.po.CipherSuiteSupportPO;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
+
+import java.util.List;
 
 /**
 * @author admin
@@ -12,7 +18,7 @@ import org.apache.ibatis.annotations.Mapper;
 */
 @Mapper
 public interface CipherSuiteSupportMapper extends BaseMapper<CipherSuiteSupportPO> {
-
+    List<CipherSuiteInfoDTO> getCipherSuiteInfoPageByTaskId(@Param("taskId") Long taskId, @Param("offset") int offset, @Param("size") int size);
 }
 
 

@@ -41,7 +41,7 @@
             <result property="createdAt" column="created_at" />
             <result property="certificateDeploymentId" column="certificate_deployment_id" />
             <result property="pathValidationResultId" column="path_validation_result_id" />
-            <result property="index" column="index" />
+            <result property="certificateDetailIndex" column="certificate_detail_index" />
     </resultMap>
 
     <sql id="Base_Column_List">
@@ -54,4 +54,31 @@
         public_key_ec_y,subject_alternative_name,created_at,certificate_deployment_id,path_validation_result_id,
         index
     </sql>
+
+    <select id="getCertificateInfoPageByTaskId" resultType="com.example.tlstool.entity.dto.CertificateInfoDTO">
+        SELECT cdetail.cert_id AS certId,
+               serial_number AS serialNumber,
+               issuer_rfc4514_string AS issuerEfc4514String,
+               not_valid_before AS notValidBefore,
+               not_valid_after AS notValidAfter,
+               public_key_algorithm AS publicKeyAlgorithm,
+               public_key_key_size AS publicKeySize,
+               signature_hash_algorithm_name AS signatureHashAlgorithmName,
+               was_validation_successful AS wasValidationSuccessful,
+               trust_store_path AS trustStorePath,
+               trust_store_name AS trustStoreName,
+               trust_store_version AS trustStoreVersion,
+               ocsp_response_is_trusted,
+               ocsp_response_response_status,
+               cdetail.certificate_detail_index AS certificateDetailIndex,
+               cdetail.path_validation_result_id AS pathValidationResultId
+        FROM scan_task stask
+                 RIGHT JOIN scan_target starget ON stask.task_id = starget.task_id
+                 RIGHT JOIN certificate_deployment cdeployment ON cdeployment.target_id = starget.target_id
+                 RIGHT JOIN path_validation_result pvr ON pvr.certificate_deployment_id = cdeployment.certificate_deployment_id
+                 RIGHT JOIN certificate_detail cdetail ON pvr.path_validation_result_id = cdetail.path_validation_result_id
+        WHERE stask.task_id = 4
+        ORDER BY cdetail.path_validation_result_id, cdetail.certificate_detail_index
+        LIMIT #{offset}, #{size};
+    </select>
 </mapper>

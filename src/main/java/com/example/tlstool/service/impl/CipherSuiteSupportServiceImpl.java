@@ -1,12 +1,16 @@
 package com.example.tlstool.service.impl;
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.example.tlstool.entity.dto.CipherSuiteInfoDTO;
 import com.example.tlstool.entity.po.CipherSuiteSupportPO;
 import com.example.tlstool.service.CipherSuiteSupportService;
 import com.example.tlstool.mapper.CipherSuiteSupportMapper;
 import com.fasterxml.jackson.databind.JsonNode;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 /**
 * @author admin
@@ -17,7 +21,6 @@ import org.springframework.stereotype.Service;
 public class CipherSuiteSupportServiceImpl extends ServiceImpl<CipherSuiteSupportMapper, CipherSuiteSupportPO>
     implements CipherSuiteSupportService{
 
-    @Async
     @Override
     public void saveCipherSuiteSupportInfo(JsonNode cipherSuiteSupportInfo, Long targetId) {
         if (cipherSuiteSupportInfo.findValue("result") != null && !cipherSuiteSupportInfo.findValue("result").isNull()) {
@@ -49,6 +52,12 @@ public class CipherSuiteSupportServiceImpl extends ServiceImpl<CipherSuiteSuppor
                 }
             }
         }
+    }
+
+    @Override
+    public List<CipherSuiteInfoDTO> getCipherSuiteInfoPage(Long taskId, int page, int size) {
+        int offset = (page - 1) * size;
+        return baseMapper.getCipherSuiteInfoPageByTaskId(taskId, offset, size);
     }
 }
 

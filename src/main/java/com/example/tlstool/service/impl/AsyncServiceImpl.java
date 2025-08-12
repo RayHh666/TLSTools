@@ -129,32 +129,32 @@ public class AsyncServiceImpl implements AsyncService {
                         }
                         // 存certificateDeploymentService
                         if (serverScanResult.findValue("certificate_deployments") != null && !serverScanResult.findValue("certificate_deployments").isNull()) {
-                            log.info("certificate_deployments: {}", serverScanResult.findValue("certificate_deployments"));
+                            // log.info("certificate_deployments: {}", serverScanResult.findValue("certificate_deployments"));
                             certificateDeploymentService.saveCertificateDeployment(serverScanResult.findValue("certificate_deployments"), targetId);
                         }
                         // 存密钥套件
                         if (serverScanResult.findValue("ssl_2_0_cipher_suites") != null && !serverScanResult.findValue("ssl_2_0_cipher_suites").isNull()) {
-                            log.info("ssl_2_0_cipher_suites: {}", serverScanResult.findValue("ssl_2_0_cipher_suites"));
+                            // log.info("ssl_2_0_cipher_suites: {}", serverScanResult.findValue("ssl_2_0_cipher_suites"));
                             cipherSuiteSupportService.saveCipherSuiteSupportInfo(serverScanResult.findValue("ssl_2_0_cipher_suites"), targetId);
                         }
                         if (serverScanResult.findValue("ssl_3_0_cipher_suites") != null && !serverScanResult.findValue("ssl_3_0_cipher_suites").isNull()) {
-                            log.info("ssl_3_0_cipher_suites: {}", serverScanResult.findValue("ssl_3_0_cipher_suites"));
+                            // log.info("ssl_3_0_cipher_suites: {}", serverScanResult.findValue("ssl_3_0_cipher_suites"));
                             cipherSuiteSupportService.saveCipherSuiteSupportInfo(serverScanResult.findValue("ssl_3_0_cipher_suites"), targetId);
                         }
                         if (serverScanResult.findValue("tls_1_0_cipher_suites") != null && !serverScanResult.findValue("tls_1_0_cipher_suites").isNull()) {
-                            log.info("tls_1_0_cipher_suites: {}", serverScanResult.findValue("tls_1_0_cipher_suites"));
+                            // log.info("tls_1_0_cipher_suites: {}", serverScanResult.findValue("tls_1_0_cipher_suites"));
                             cipherSuiteSupportService.saveCipherSuiteSupportInfo(serverScanResult.findValue("tls_1_0_cipher_suites"), targetId);
                         }
                         if (serverScanResult.findValue("tls_1_1_cipher_suites") != null && !serverScanResult.findValue("tls_1_1_cipher_suites").isNull()) {
-                            log.info("tls_1_1_cipher_suites: {]", serverScanResult.findValue("tls_1_1_cipher_suites"));
+                            // log.info("tls_1_1_cipher_suites: {]", serverScanResult.findValue("tls_1_1_cipher_suites"));
                             cipherSuiteSupportService.saveCipherSuiteSupportInfo(serverScanResult.findValue("tls_1_1_cipher_suites"), targetId);
                         }
                         if (serverScanResult.findValue("tls_1_2_cipher_suites") != null && !serverScanResult.findValue("tls_1_2_cipher_suites").isNull()) {
-                            log.info("tls_1_2_cipher_suites: {}", serverScanResult.findValue("tls_1_2_cipher_suites"));
+                            // log.info("tls_1_2_cipher_suites: {}", serverScanResult.findValue("tls_1_2_cipher_suites"));
                             cipherSuiteSupportService.saveCipherSuiteSupportInfo(serverScanResult.findValue("tls_1_2_cipher_suites"), targetId);
                         }
                         if (serverScanResult.findValue("tls_1_3_cipher_suites") != null && !serverScanResult.findValue("tls_1_3_cipher_suites").isNull()) {
-                            log.info("tls_1_3_cipher_suites", serverScanResult.findValue("tls_1_3_cipher_suites"));
+                            // log.info("tls_1_3_cipher_suites", serverScanResult.findValue("tls_1_3_cipher_suites"));
                             cipherSuiteSupportService.saveCipherSuiteSupportInfo(serverScanResult.findValue("tls_1_3_cipher_suites"), targetId);
                         }
                         // 存漏洞信息
@@ -168,11 +168,11 @@ public class AsyncServiceImpl implements AsyncService {
                         }
                         if (serverScanResult.findValue("robot") != null && !serverScanResult.findValue("robot").isNull()) {
                             log.info("robot: {}", serverScanResult.findValue("robot"));
-                            vulnerabilityDetectionService.saveCommonVulnerabilityInfoFromSslyze(serverScanResult.findValue("robot"), targetId, "heartbleed", "CVE-2017-13098");
+                            vulnerabilityDetectionService.saveCommonVulnerabilityInfoFromSslyze(serverScanResult.findValue("robot"), targetId, "robot", "CVE-2017-13098");
                         }
                         if (serverScanResult.findValue("session_renegotiation") != null && !serverScanResult.findValue("session_renegotiation").isNull()) {
                             log.info("session_renegotiation: {}", serverScanResult.findValue("session_renegotiation"));
-                            vulnerabilityDetectionService.saveCommonVulnerabilityInfoFromSslyze(serverScanResult.findValue("session_renegotiation"), targetId, "heartbleed", "CVE-2009-3555");
+                            vulnerabilityDetectionService.saveCommonVulnerabilityInfoFromSslyze(serverScanResult.findValue("session_renegotiation"), targetId, "session_renegotiation", "CVE-2009-3555");
                         }
 
                         // 存原始数据
@@ -195,7 +195,7 @@ public class AsyncServiceImpl implements AsyncService {
                     .set(ScanTaskPO::getStatus, "COMPLETED")
                     .set(ScanTaskPO::getRemark, sslyzeUrl)
                     .set(ScanTaskPO::getCompletedAt, dateScansCompleted);
-            scanTaskMapper.update(updateWrapper);
+            scanTaskMapper.update(null, updateWrapper);
         }
     }
 }

@@ -1,8 +1,12 @@
 package com.example.tlstool.mapper;
 
+import com.example.tlstool.entity.dto.ProtocolInfoDTO;
 import com.example.tlstool.entity.po.ScanTargetPO;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
+
+import java.util.List;
 
 /**
 * @author admin
@@ -12,7 +16,7 @@ import org.apache.ibatis.annotations.Mapper;
 */
 @Mapper
 public interface ScanTargetMapper extends BaseMapper<ScanTargetPO> {
-
+    List<ProtocolInfoDTO> getProtocolInfoPageByTaskId(@Param("taskId") Long taskId, @Param("offset") int offset, @Param("size") int size);
 }
 
 

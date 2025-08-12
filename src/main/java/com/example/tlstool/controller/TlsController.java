@@ -1,14 +1,17 @@
 package com.example.tlstool.controller;
 
+import com.example.tlstool.entity.dto.CertificateInfoDTO;
+import com.example.tlstool.entity.dto.CipherSuiteInfoDTO;
+import com.example.tlstool.entity.dto.ProtocolInfoDTO;
+import com.example.tlstool.entity.dto.VulnerabilityDetectionResultDTO;
 import com.example.tlstool.entity.ro.TlsCreateTaskRO;
-import com.example.tlstool.service.ScanTaskService;
-import com.example.tlstool.service.TlsTaskService;
+import com.example.tlstool.service.*;
 import com.example.tlstool.util.Result;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
-import java.util.Set;
+import java.util.List;
 
 @RestController
 @RequestMapping("/tls")
@@ -24,6 +27,18 @@ public class TlsController {
 
     @Resource
     private ScanTaskService scanTaskService;
+
+    @Resource
+    private ScanTargetService scanTargetService;
+
+    @Resource
+    private CertificateDetailService certificateDetailService;
+
+    @Resource
+    private CipherSuiteSupportService cipherSuiteSupportService;
+
+    @Resource
+    private VulnerabilityDetectionService vulnerabilityDetectionService;
 
 //    @PostMapping("/create")
 //    public Result createTask(@RequestBody TlsCreateTaskRO tlsCreateTaskRO){
@@ -42,15 +57,57 @@ public class TlsController {
             return Result.success(taskId);
         } catch (Exception e) {
             log.error(e.toString());
-            e.printStackTrace();
             return Result.error(e.getMessage());
         }
     }
 
-//    @GetMapping("/protocol_info")
-//    public Result getProtocolInfo(Long taskId){
-//        try {
-//
-//        }
-//    }
+    @GetMapping("/protocol_info_page")
+    public Result<List<ProtocolInfoDTO>> getProtocolInfoPage(Long taskId,
+                                                         @RequestParam(defaultValue = "1") int page,
+                                                         @RequestParam(defaultValue = "10") int size) {
+        try {
+            List<ProtocolInfoDTO> protocolInfoPage =  scanTargetService.getProtocolInfoPage(taskId, page, size);
+            return Result.success(protocolInfoPage);
+        } catch (Exception e) {
+            log.error(e.toString());
+            return Result.error(e.getMessage());
+        }
+    }
+
+    @GetMapping("/cipher_suite_info_page")
+    public Result<List<CipherSuiteInfoDTO>> getCipherSuiteInfoPage(Long taskId,
+                                                               @RequestParam(defaultValue = "1") int page,
+                                                               @RequestParam(defaultValue = "10") int size) {
+        try {
+            List<CipherSuiteInfoDTO> cipherSuiteInfoPage = cipherSuiteSupportService.getCipherSuiteInfoPage(taskId, page, size);
+            return Result.success(cipherSuiteInfoPage);
+        } catch (Exception e) {
+            log.error(e.toString());
+            return Result.error(e.getMessage());
+        }
+    }
+
+    @GetMapping("/certificate_info_page")
+    public Result<List<CertificateInfoDTO>> getCertificateInfoPage(Long taskId,
+                                                               @RequestParam(defaultValue = "1") int page,
+                                                               @RequestParam(defaultValue = "10") int size) {
+        try {
+            List<CertificateInfoDTO> certificateInfoPage = certificateDetailService.getCertificateInfoPage(taskId, page, size);
+            return Result.success(certificateInfoPage);
+        } catch (Exception e) {
+            log.error(e.toString());
+            return Result.error(e.getMessage());
+        }
+    }
+
+    @GetMapping("/vulnerability_detection_result")
+    public Result<List<VulnerabilityDetectionResultDTO>> getVulnerabilityDetectionResult(Long taskId) {
+        try {
+            List<VulnerabilityDetectionResultDTO> VulnerabilityDetectionResultList = vulnerabilityDetectionService.getVulnerabilityDetectionResultList(taskId);
+            return Result.success(VulnerabilityDetectionResultList);
+        } catch (Exception e) {
+            log.error(e.toString());
+            return Result.error(e.getMessage());
+        }
+    }
 }
