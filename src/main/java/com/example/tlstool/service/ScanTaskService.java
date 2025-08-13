@@ -14,4 +14,6 @@ import java.util.Set;
 */
 public interface ScanTaskService extends IService<ScanTaskPO> {
     Long createTask (TlsCreateTaskRO tlsCreateTaskRO) throws Exception;
+
+    ScanTaskPO getTaskInfoById(Long taskId);
 }

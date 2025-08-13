@@ -34,6 +34,12 @@ public class ScanTargetPO {
     private Long taskId;
 
     /**
+     * 目标
+     */
+    @TableField(value = "target")
+    private String target;
+
+    /**
      * 目标主机(域名或IP)
      */
     @TableField(value = "host")

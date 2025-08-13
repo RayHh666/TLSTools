@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.tlstool.mapper.HttpUpgradeMapper">
+
+    <resultMap id="BaseResultMap" type="com.example.tlstool.entity.po.HttpUpgradeResultPO">
+        <id property="httpUpgradeResultId" column="http_upgrade_result_id" />
+        <result property="targetId" column="target_id" />
+        <result property="status" column="status" />
+        <result property="location" column="location" />
+        <result property="errorMessage" column="errorMessage" />
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        http_upgrade_result_id,target_id,status,location,errorMessage
+    </sql>
+
+</mapper>

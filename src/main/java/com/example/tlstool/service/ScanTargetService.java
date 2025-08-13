@@ -13,6 +13,10 @@ import java.util.List;
 * @createDate 2025-08-03 18:37:45
 */
 public interface ScanTargetService extends IService<ScanTargetPO> {
+    Long createTarget (Long taskId, String target);
+
+    void  updateSslyzeTargetInfo (JsonNode serverLocation, Long targetId);
+
     Long saveSslyzeTargetInfo (JsonNode serverLocation, Long taskId);
 
     List<ProtocolInfoDTO> getProtocolInfoPage (Long taskId, int page, int size);

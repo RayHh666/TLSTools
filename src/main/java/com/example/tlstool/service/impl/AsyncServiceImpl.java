@@ -2,11 +2,15 @@ package com.example.tlstool.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.example.tlstool.Executor.SslyzeExecutor;
+import com.example.tlstool.entity.dto.HttpUpgradeResultDTO;
+import com.example.tlstool.entity.po.HttpUpgradeResultPO;
 import com.example.tlstool.entity.po.ScanTaskPO;
 import com.example.tlstool.entity.ro.TlsCreateTaskRO;
+import com.example.tlstool.mapper.HttpUpgradeMapper;
 import com.example.tlstool.mapper.ScanTaskMapper;
 import com.example.tlstool.service.*;
 import com.example.tlstool.util.DateTimeUtils;
+import com.example.tlstool.util.HttpUpgradeChecker;
 import com.example.tlstool.util.SslyzeUtils;
 import com.fasterxml.jackson.databind.JsonNode;
 import lombok.extern.slf4j.Slf4j;
@@ -17,6 +21,7 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
@@ -47,6 +52,9 @@ public class AsyncServiceImpl implements AsyncService {
     @Resource
     private ScanTaskMapper scanTaskMapper;
 
+    @Resource
+    private HttpUpgradeMapper httpUpgradeMapper;
+
     @Qualifier("mainTaskExecutor")
     @Resource
     private Executor mainTaskExecutor;
@@ -57,7 +65,7 @@ public class AsyncServiceImpl implements AsyncService {
 
     @Async("mainTaskExecutor")
     @Override
-    public void createSslyzeTask (TlsCreateTaskRO tlsCreateTaskRO, Long taskId) throws Exception {
+    public void createAsyncTask (TlsCreateTaskRO tlsCreateTaskRO, Long taskId) throws Exception {
         String sslyzeCommand = "";
         // 扫描目标
         Set<String> targetSet = new HashSet<>(Arrays.asList(tlsCreateTaskRO.getTargets().split(",")));
@@ -86,8 +94,20 @@ public class AsyncServiceImpl implements AsyncService {
         for (String target : targetSet) {
             futures.add(CompletableFuture.runAsync(() ->
                     {
+                        Long targetId = scanTargetService.createTarget(taskId, target);
                         try {
-                            singleSslyzeScan(finalSslyzeCommand, target, taskId);
+                            if (tlsCreateTaskRO.getTaskType().contains("STARTTLS_SCAN") || tlsCreateTaskRO.getTaskType().contains("TLS_SCAN")) {
+                                singleSslyzeScan(finalSslyzeCommand, target, targetId, taskId);
+                            }
+
+                        } catch (Exception e) {
+                            throw new RuntimeException(e);
+                        }
+
+                        try {
+                            if (tlsCreateTaskRO.getTaskType().contains("HTTP_SCAN")) {
+                                createCurlTask(target, targetId ,taskId);
+                            }
                         } catch (Exception e) {
                             throw new RuntimeException(e);
                         }
@@ -95,33 +115,23 @@ public class AsyncServiceImpl implements AsyncService {
                     subTaskExecutor // 专用子任务线程池
             ));
         }
-
-
-
-
-
-        // 所有子任务完成后更新主任务状态
-//        CompletableFuture.allOf(futures.toArray(new CompletableFuture[0]))
-//                .thenRunAsync(() -> updateMainTaskStatus(taskId), mainTaskExecutor);
-
     }
 
-//    public void updateMainTaskStatus(Long taskId) {
-//    }
 
     @Async
-    public void singleSslyzeScan(String sslyzeCommand, String target, Long taskId) throws Exception {
+    public void singleSslyzeScan(String sslyzeCommand,String target, Long targetId, Long taskId) throws Exception {
         // 解析本次扫描结果集
         String sslyzeVersion = null;
         String sslyzeUrl = null;
         LocalDateTime dateScansCompleted = null;
+        // TODO 任务异常处理
         JsonNode jsonRoot = SslyzeUtils.getSslyzeJsonOutput(sslyzeCommand, target);
         if (jsonRoot != null) {
             if (jsonRoot.findValue("server_scan_results") != null && jsonRoot.findValue("server_scan_results").isArray()) {
                 JsonNode serverScanResults = jsonRoot.findValue("server_scan_results");
                 for (JsonNode serverScanResult : serverScanResults) {
                     if (serverScanResult.findValue("server_location") != null && !serverScanResult.findValue("server_location").isNull()) {
-                        Long targetId = scanTargetService.saveSslyzeTargetInfo(serverScanResult.findValue("server_location"), taskId);
+                        scanTargetService.updateSslyzeTargetInfo(serverScanResult.findValue("server_location"), targetId);
                         // 存连接信息
                         if (serverScanResult.findValue("connectivity_result") != null && !serverScanResult.findValue("connectivity_result").isNull()) {
                             log.info("connectivity_result: {}", serverScanResult.findValue("connectivity_result"));
@@ -198,4 +208,68 @@ public class AsyncServiceImpl implements AsyncService {
             scanTaskMapper.update(null, updateWrapper);
         }
     }
+
+    @Async
+    public void createCurlTask(String target, Long targetId ,Long taskId) {
+        HttpUpgradeResultPO httpUpgradeResultPO = new HttpUpgradeResultPO().builder()
+                .targetId(targetId)
+                .target(target)
+                .build();
+        try {
+            HttpUpgradeResultDTO httpUpgradeResultDTO = HttpUpgradeChecker.isUpgradedToHttps(target);
+            httpUpgradeResultPO.setStatus(httpUpgradeResultDTO.getStatus());
+            httpUpgradeResultPO.setLocation(httpUpgradeResultDTO.getLocation());
+            httpUpgradeMapper.insert(httpUpgradeResultPO);
+        } catch (Exception e) {
+            httpUpgradeResultPO.setErrorMessage(e.getMessage());
+            httpUpgradeMapper.insert(httpUpgradeResultPO);
+        }
+
+        LambdaUpdateWrapper<ScanTaskPO> updateWrapper = new LambdaUpdateWrapper<ScanTaskPO>()
+                .eq(ScanTaskPO::getTaskId, taskId)
+                .set(ScanTaskPO::getToolName, "curl")
+                .set(ScanTaskPO::getCompletedAt, LocalDateTime.now());
+        scanTaskMapper.update(null, updateWrapper);
+    }
+
+//
+//    @Async
+//    // TODO curl检查http重定向
+//    public void createCurlTask(TlsCreateTaskRO tlsCreateTaskRO, Long taskId, String command, Integer maxTimes) {
+//        String curlCommand = "curl";
+//        if (StringUtils.isNotBlank(command)) {
+//            curlCommand = curlCommand + " " + command;
+//            if (maxTimes != null) {
+//                curlCommand = curlCommand + " --max-time" + " " + maxTimes;
+//            }
+//        }
+//
+//        Set<String> targetSet = new HashSet<>(Arrays.asList(tlsCreateTaskRO.getTargets()));
+//        for (String target : targetSet) {
+//            if (StringUtils.isNotBlank(target)) {
+//                try {
+//                    curlCommand = curlCommand + " " + target;
+//                    ProcessBuilder builder = new ProcessBuilder();
+//                    String osName = System.getProperty("os.name").toLowerCase();
+//                    if (osName.contains("windows")) {
+//                        // windowssystem
+//                        builder.command("cmd", "/c", curlCommand);
+//                    } else {
+//                        // Other systems
+//                        builder.command("bash", "-c", curlCommand);
+//                    }
+//                    builder.redirectErrorStream(true);
+//                    Process process = builder.start();
+//                } catch (IOException e) {
+//                    throw new RuntimeException(e);
+//                }
+//            }
+//        }
+//
+//        LambdaUpdateWrapper<ScanTaskPO> updateWrapper = new LambdaUpdateWrapper<ScanTaskPO>()
+//                .eq(ScanTaskPO::getTaskId, taskId)
+//                .set(ScanTaskPO::getToolName, "curl")
+//                .set(ScanTaskPO::getCompletedAt, LocalDateTime.now());
+//        scanTaskMapper.update(null, updateWrapper);
+//    }
 }

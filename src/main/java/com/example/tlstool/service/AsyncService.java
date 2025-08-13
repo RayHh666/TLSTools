@@ -4,5 +4,7 @@ import com.example.tlstool.entity.ro.TlsCreateTaskRO;
 
 public interface AsyncService {
 
-    void createSslyzeTask (TlsCreateTaskRO tlsCreateTaskRO, Long taskId) throws Exception;
+    void createAsyncTask (TlsCreateTaskRO tlsCreateTaskRO, Long taskId) throws Exception;
+
+//    void createCurlTask(TlsCreateTaskRO tlsCreateTaskRO, Long taskId, String command, Integer maxTimes);
 }

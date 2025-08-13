@@ -4,6 +4,7 @@ import com.example.tlstool.entity.dto.CertificateInfoDTO;
 import com.example.tlstool.entity.dto.CipherSuiteInfoDTO;
 import com.example.tlstool.entity.dto.ProtocolInfoDTO;
 import com.example.tlstool.entity.dto.VulnerabilityDetectionResultDTO;
+import com.example.tlstool.entity.po.ScanTaskPO;
 import com.example.tlstool.entity.ro.TlsCreateTaskRO;
 import com.example.tlstool.service.*;
 import com.example.tlstool.util.Result;
@@ -110,4 +111,21 @@ public class TlsController {
             return Result.error(e.getMessage());
         }
     }
+
+    @GetMapping("/task_info")
+    public Result<ScanTaskPO> getTaskInfo(Long taskId) {
+        try {
+            ScanTaskPO scanTaskPO = scanTaskService.getTaskInfoById(taskId);
+            return Result.success(scanTaskPO);
+        } catch (Exception e) {
+            log.error(e.toString());
+            return Result.error(e.getMessage());
+        }
+    }
+
+    // TODO 查询http重定向结果
+
+    // TODO 查询证书链
+
+    // TODO 查询接受的加密套件  传参（target, TLS版本）
 }
