@@ -86,4 +86,9 @@ public class CertificateInfoDTO {
      * 验证链id
      */
     Long pathValidationResultId;
+
+    /**
+     * 证书部署链
+     */
+    Long certificateDeploymentId;
 }

@@ -75,7 +75,7 @@ public class HttpUpgradeChecker {
         // 遍历所有响应头行
         for (String line : lines) {
 
-            log.info(line);
+//            log.info(line);
 
             // 关键检查1: 请求是否OK
             if (line.contains("HTTP/") && line.contains("200")) {

@@ -1,9 +1,9 @@
 package com.example.tlstool.service.impl;
 
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.example.tlstool.entity.dto.CertificateInfoDTO;
 import com.example.tlstool.entity.po.CertificateDetailPO;
+import com.example.tlstool.entity.vo.CertificateInfoVO;
 import com.example.tlstool.service.CertificateDetailService;
 import com.example.tlstool.mapper.CertificateDetailMapper;
 import com.example.tlstool.util.DateTimeUtils;
@@ -127,9 +127,20 @@ public class CertificateDetailServiceImpl extends ServiceImpl<CertificateDetailM
         }
     }
 
-    public List<CertificateInfoDTO> getCertificateInfoPage(Long taskId, int page, int size) {
+    @Override
+    public CertificateInfoVO getCertificateInfoPage(Long taskId, int page, int size) {
+        CertificateInfoVO  certificateInfoVO = new CertificateInfoVO();
         int offset = (page - 1) * size;
-        return baseMapper.getCertificateInfoPageByTaskId(taskId, offset, size);
+        List<CertificateInfoDTO> certificateInfoDTOList = baseMapper.getCertificateInfoPageByTaskId(taskId, offset, size);
+        Integer total = baseMapper.getCertificateInfoTotalByTaskId(taskId);
+        certificateInfoVO.setTotal(total);
+        certificateInfoVO.setCertificateInfoDTOList(certificateInfoDTOList);
+        return certificateInfoVO;
+    }
+
+    @Override
+    public List<CertificateDetailPO> getCertificateChainDetail(Long certificateDeploymentId) {
+        return baseMapper.getCertificateChainDetail(certificateDeploymentId);
     }
 }
 

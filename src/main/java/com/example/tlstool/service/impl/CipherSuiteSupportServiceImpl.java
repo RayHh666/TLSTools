@@ -3,7 +3,10 @@ package com.example.tlstool.service.impl;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.example.tlstool.entity.dto.CipherSuiteInfoDTO;
+import com.example.tlstool.entity.dto.ProtocolInfoDTO;
 import com.example.tlstool.entity.po.CipherSuiteSupportPO;
+import com.example.tlstool.entity.vo.CipherSuiteInfoVO;
+import com.example.tlstool.entity.vo.ProtocolInfoVO;
 import com.example.tlstool.service.CipherSuiteSupportService;
 import com.example.tlstool.mapper.CipherSuiteSupportMapper;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -55,9 +58,14 @@ public class CipherSuiteSupportServiceImpl extends ServiceImpl<CipherSuiteSuppor
     }
 
     @Override
-    public List<CipherSuiteInfoDTO> getCipherSuiteInfoPage(Long taskId, int page, int size) {
+    public CipherSuiteInfoVO getCipherSuiteInfoPage(Long taskId, Long targetId, String tlsVersion, int page, int size) {
+        CipherSuiteInfoVO cipherSuiteInfoVO = new CipherSuiteInfoVO();
         int offset = (page - 1) * size;
-        return baseMapper.getCipherSuiteInfoPageByTaskId(taskId, offset, size);
+        List<CipherSuiteInfoDTO> cipherSuiteInfoDTOList = baseMapper.getCipherSuiteInfoPageByTaskId(taskId, targetId, tlsVersion, offset, size);
+        Integer total = baseMapper.getCipherSuiteInfoTotalByTaskId(taskId, targetId, tlsVersion);
+        cipherSuiteInfoVO.setTotal(total);
+        cipherSuiteInfoVO.setCipherSuiteInfoDTOList(cipherSuiteInfoDTOList);
+        return cipherSuiteInfoVO;
     }
 }
 

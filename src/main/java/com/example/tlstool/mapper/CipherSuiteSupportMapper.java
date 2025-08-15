@@ -18,7 +18,13 @@ import java.util.List;
 */
 @Mapper
 public interface CipherSuiteSupportMapper extends BaseMapper<CipherSuiteSupportPO> {
-    List<CipherSuiteInfoDTO> getCipherSuiteInfoPageByTaskId(@Param("taskId") Long taskId, @Param("offset") int offset, @Param("size") int size);
+    List<CipherSuiteInfoDTO> getCipherSuiteInfoPageByTaskId(@Param("taskId") Long taskId,
+                                                            @Param("targetId") Long targetId,
+                                                            @Param("tlsVersion") String tlsVersion,
+                                                            @Param("offset") int offset,
+                                                            @Param("size") int size);
+
+    Integer getCipherSuiteInfoTotalByTaskId(@Param("taskId") Long taskId, @Param("targetId") Long targetId, @Param("tlsVersion") String tlsVersion);
 }
 
 

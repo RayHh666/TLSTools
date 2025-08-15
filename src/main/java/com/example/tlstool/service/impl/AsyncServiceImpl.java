@@ -85,7 +85,7 @@ public class AsyncServiceImpl implements AsyncService {
         }
 
         // 漏洞扫描参数
-        sslyzeCommand = sslyzeCommand + " --heartbleed --robot --compression --elliptic_curves --openssl_ccs --certinfo";
+        sslyzeCommand = sslyzeCommand + " --heartbleed --reneg --robot --compression --elliptic_curves --openssl_ccs --certinfo";
 
         final String finalSslyzeCommand = sslyzeCommand;
 
@@ -131,6 +131,7 @@ public class AsyncServiceImpl implements AsyncService {
                 JsonNode serverScanResults = jsonRoot.findValue("server_scan_results");
                 for (JsonNode serverScanResult : serverScanResults) {
                     if (serverScanResult.findValue("server_location") != null && !serverScanResult.findValue("server_location").isNull()) {
+                        log.info("server_location：{}", serverScanResult.findValue("server_location"));
                         scanTargetService.updateSslyzeTargetInfo(serverScanResult.findValue("server_location"), targetId);
                         // 存连接信息
                         if (serverScanResult.findValue("connectivity_result") != null && !serverScanResult.findValue("connectivity_result").isNull()) {

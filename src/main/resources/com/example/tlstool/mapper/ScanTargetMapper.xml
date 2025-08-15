@@ -21,15 +21,32 @@
     </sql>
 
     <select id="getProtocolInfoPageByTaskId" resultType="com.example.tlstool.entity.dto.ProtocolInfoDTO">
-        SELECT starget.resolved_ip ip,
+        SELECT DISTINCT
+               starget.target_id,
+               starget.resolved_ip ip,
                starget.port port,
                css.tls_version tlsVersion,
-               css.cipher_name cipherName,
                css.is_accepted accepted
         FROM scan_task stask
                  RIGHT JOIN scan_target starget ON stask.task_id = starget.task_id
                  RIGHT JOIN cipher_suite_support css ON starget.target_id = css.target_id
         WHERE stask.task_id = #{taskId}
         LIMIT #{offset}, #{size};
+    </select>
+
+    <select id="getProtocolInfoTotalByTaskId" resultType="java.lang.Integer">
+        SELECT COUNT(*) AS total_count
+        FROM (
+                 SELECT DISTINCT
+                     starget.target_id,
+                     starget.resolved_ip,
+                     starget.port,
+                     css.tls_version,
+                     css.is_accepted
+                 FROM scan_task stask
+                          RIGHT JOIN scan_target starget ON stask.task_id = starget.task_id
+                          RIGHT JOIN cipher_suite_support css ON starget.target_id = css.target_id
+                 WHERE stask.task_id = #{taskId}
+             ) AS subquery
     </select>
 </mapper>

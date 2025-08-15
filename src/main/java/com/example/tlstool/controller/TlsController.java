@@ -1,11 +1,14 @@
 package com.example.tlstool.controller;
 
-import com.example.tlstool.entity.dto.CertificateInfoDTO;
-import com.example.tlstool.entity.dto.CipherSuiteInfoDTO;
-import com.example.tlstool.entity.dto.ProtocolInfoDTO;
+import com.example.tlstool.entity.dto.CertificateChainDetailDTO;
 import com.example.tlstool.entity.dto.VulnerabilityDetectionResultDTO;
+import com.example.tlstool.entity.po.CertificateDetailPO;
 import com.example.tlstool.entity.po.ScanTaskPO;
 import com.example.tlstool.entity.ro.TlsCreateTaskRO;
+import com.example.tlstool.entity.vo.CertificateInfoVO;
+import com.example.tlstool.entity.vo.CipherSuiteInfoVO;
+import com.example.tlstool.entity.vo.ProtocolInfoVO;
+import com.example.tlstool.entity.vo.VulnerabilityDetectionResultVO;
 import com.example.tlstool.service.*;
 import com.example.tlstool.util.Result;
 import lombok.extern.slf4j.Slf4j;
@@ -63,11 +66,11 @@ public class TlsController {
     }
 
     @GetMapping("/protocol_info_page")
-    public Result<List<ProtocolInfoDTO>> getProtocolInfoPage(Long taskId,
+    public Result<ProtocolInfoVO> getProtocolInfoPage(Long taskId,
                                                          @RequestParam(defaultValue = "1") int page,
                                                          @RequestParam(defaultValue = "10") int size) {
         try {
-            List<ProtocolInfoDTO> protocolInfoPage =  scanTargetService.getProtocolInfoPage(taskId, page, size);
+            ProtocolInfoVO protocolInfoPage =  scanTargetService.getProtocolInfoPage(taskId, page, size);
             return Result.success(protocolInfoPage);
         } catch (Exception e) {
             log.error(e.toString());
@@ -76,11 +79,11 @@ public class TlsController {
     }
 
     @GetMapping("/cipher_suite_info_page")
-    public Result<List<CipherSuiteInfoDTO>> getCipherSuiteInfoPage(Long taskId,
+    public Result<CipherSuiteInfoVO> getCipherSuiteInfoPage(Long taskId, Long targetId, String tlsVersion,
                                                                @RequestParam(defaultValue = "1") int page,
                                                                @RequestParam(defaultValue = "10") int size) {
         try {
-            List<CipherSuiteInfoDTO> cipherSuiteInfoPage = cipherSuiteSupportService.getCipherSuiteInfoPage(taskId, page, size);
+            CipherSuiteInfoVO cipherSuiteInfoPage = cipherSuiteSupportService.getCipherSuiteInfoPage(taskId, targetId, tlsVersion, page, size);
             return Result.success(cipherSuiteInfoPage);
         } catch (Exception e) {
             log.error(e.toString());
@@ -89,11 +92,11 @@ public class TlsController {
     }
 
     @GetMapping("/certificate_info_page")
-    public Result<List<CertificateInfoDTO>> getCertificateInfoPage(Long taskId,
-                                                               @RequestParam(defaultValue = "1") int page,
-                                                               @RequestParam(defaultValue = "10") int size) {
+    public Result<CertificateInfoVO> getCertificateInfoPage(Long taskId,
+                                                            @RequestParam(defaultValue = "1") int page,
+                                                            @RequestParam(defaultValue = "10") int size) {
         try {
-            List<CertificateInfoDTO> certificateInfoPage = certificateDetailService.getCertificateInfoPage(taskId, page, size);
+            CertificateInfoVO certificateInfoPage = certificateDetailService.getCertificateInfoPage(taskId, page, size);
             return Result.success(certificateInfoPage);
         } catch (Exception e) {
             log.error(e.toString());
@@ -101,10 +104,23 @@ public class TlsController {
         }
     }
 
-    @GetMapping("/vulnerability_detection_result")
-    public Result<List<VulnerabilityDetectionResultDTO>> getVulnerabilityDetectionResult(Long taskId) {
+    @GetMapping("/received_certificate_chain")
+    public Result<List<CertificateDetailPO>> getReceivedCertificateChain(Long certificateDeploymentId) {
         try {
-            List<VulnerabilityDetectionResultDTO> VulnerabilityDetectionResultList = vulnerabilityDetectionService.getVulnerabilityDetectionResultList(taskId);
+            List<CertificateDetailPO> certificateChainDetailDTOList = certificateDetailService.getCertificateChainDetail(certificateDeploymentId);
+            return Result.success(certificateChainDetailDTOList);
+        } catch (Exception e) {
+            log.error(e.toString());
+            return Result.error(e.getMessage());
+        }
+    }
+
+    @GetMapping("/vulnerability_detection_result")
+    public Result<VulnerabilityDetectionResultVO> getVulnerabilityDetectionResult(Long taskId,
+                                                                                  @RequestParam(defaultValue = "1") int page,
+                                                                                  @RequestParam(defaultValue = "10") int size) {
+        try {
+            VulnerabilityDetectionResultVO VulnerabilityDetectionResultList = vulnerabilityDetectionService.getVulnerabilityDetectionResultList(taskId, page, size);
             return Result.success(VulnerabilityDetectionResultList);
         } catch (Exception e) {
             log.error(e.toString());
@@ -125,7 +141,11 @@ public class TlsController {
 
     // TODO 查询http重定向结果
 
-    // TODO 查询证书链
+    // 查询证书链
 
-    // TODO 查询接受的加密套件  传参（target, TLS版本）
+    // TODO Resolved [org.springframework.web.method.annotation.MethodArgumentTypeMismatchException: Failed to convert value of type 'java.lang.String' to required type 'java.lang.Long'; nested exception is java.lang.NumberFormatException: For input string: "null"]
+
+    // TODO 重构任务结束逻辑，将“COMPLETED”字段放在target中，最后更新task状态
+
+    // TODO  More than one TaskExecutor bean found within the context, and none is named 'taskExecutor'. Mark one of them as primary or name it 'taskExecutor' (possibly as an alias) in order to use it for async processing: [mainTaskExecutor, subTaskExecutor]
 }

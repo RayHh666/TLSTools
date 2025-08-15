@@ -1,5 +1,6 @@
 package com.example.tlstool.mapper;
 
+import com.example.tlstool.entity.dto.CertificateChainDetailDTO;
 import com.example.tlstool.entity.dto.CertificateInfoDTO;
 import com.example.tlstool.entity.po.CertificateDetailPO;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
@@ -17,6 +18,10 @@ import java.util.List;
 @Mapper
 public interface CertificateDetailMapper extends BaseMapper<CertificateDetailPO> {
     List<CertificateInfoDTO> getCertificateInfoPageByTaskId(@Param("taskId") Long taskId, @Param("offset") int offset, @Param("size") int size);
+
+    Integer getCertificateInfoTotalByTaskId(@Param("taskId") Long taskId);
+
+    List<CertificateDetailPO> getCertificateChainDetail(@Param("certificateDeploymentId") Long certificateDeploymentId);
 }
 
 

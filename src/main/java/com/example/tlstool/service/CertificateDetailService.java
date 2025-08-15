@@ -1,8 +1,10 @@
 package com.example.tlstool.service;
 
+import com.example.tlstool.entity.dto.CertificateChainDetailDTO;
 import com.example.tlstool.entity.dto.CertificateInfoDTO;
 import com.example.tlstool.entity.po.CertificateDetailPO;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.example.tlstool.entity.vo.CertificateInfoVO;
 import com.fasterxml.jackson.databind.JsonNode;
 
 import java.util.List;
@@ -15,5 +17,7 @@ import java.util.List;
 public interface CertificateDetailService extends IService<CertificateDetailPO> {
     void saveCertificateDetailFromSslyze(JsonNode certificateDetails, Long certificateDeploymentId, Long pathValidationResultId);
 
-    List<CertificateInfoDTO> getCertificateInfoPage(Long taskId, int page, int size);
+    CertificateInfoVO getCertificateInfoPage(Long taskId, int page, int size);
+
+    List<CertificateDetailPO> getCertificateChainDetail(Long certificateDeploymentId);
 }

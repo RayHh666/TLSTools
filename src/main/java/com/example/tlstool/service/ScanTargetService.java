@@ -3,6 +3,7 @@ package com.example.tlstool.service;
 import com.example.tlstool.entity.dto.ProtocolInfoDTO;
 import com.example.tlstool.entity.po.ScanTargetPO;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.example.tlstool.entity.vo.ProtocolInfoVO;
 import com.fasterxml.jackson.databind.JsonNode;
 
 import java.util.List;
@@ -19,5 +20,5 @@ public interface ScanTargetService extends IService<ScanTargetPO> {
 
     Long saveSslyzeTargetInfo (JsonNode serverLocation, Long taskId);
 
-    List<ProtocolInfoDTO> getProtocolInfoPage (Long taskId, int page, int size);
+    ProtocolInfoVO getProtocolInfoPage (Long taskId, int page, int size);
 }

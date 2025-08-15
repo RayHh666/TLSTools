@@ -21,6 +21,14 @@
             <artifactId>spring-boot-starter</artifactId>
         </dependency>
 
+        <!-- Junit依赖 -->
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <!-- SpringBootText注解依赖 -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
@@ -122,7 +130,6 @@
                 <version>${spring-boot.version}</version>
                 <configuration>
                     <mainClass>com.example.tlstool.TlsToolApplication</mainClass>
-                    <skip>true</skip>
                 </configuration>
                 <executions>
                     <execution>

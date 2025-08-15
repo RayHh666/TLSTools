@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.example.tlstool.entity.dto.ProtocolInfoDTO;
 import com.example.tlstool.entity.po.ScanTargetPO;
+import com.example.tlstool.entity.vo.ProtocolInfoVO;
 import com.example.tlstool.service.ScanTargetService;
 import com.example.tlstool.mapper.ScanTargetMapper;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -67,9 +68,15 @@ public class ScanTargetServiceImpl extends ServiceImpl<ScanTargetMapper, ScanTar
     }
 
     @Override
-    public List<ProtocolInfoDTO> getProtocolInfoPage (Long taskId, int page, int size){
+    public ProtocolInfoVO getProtocolInfoPage (Long taskId, int page, int size){
+        ProtocolInfoVO protocolInfoVO = new ProtocolInfoVO();
         int offset = (page - 1) * size;
-        return baseMapper.getProtocolInfoPageByTaskId(taskId, offset, size);
+        List<ProtocolInfoDTO> protocolInfoDTOList = baseMapper.getProtocolInfoPageByTaskId(taskId, offset, size);
+        Integer total = baseMapper.getProtocolInfoTotalByTaskId(taskId);
+
+        protocolInfoVO.setTotal(total);
+        protocolInfoVO.setProtocolInfoDTOList(protocolInfoDTOList);
+        return protocolInfoVO;
     }
 }
 

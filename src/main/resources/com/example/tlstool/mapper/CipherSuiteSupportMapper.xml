@@ -30,6 +30,33 @@
                  LEFT JOIN scan_target ON cipher_suite_support.target_id = scan_target.target_id
                  LEFT JOIN scan_task ON scan_task.task_id = scan_target.task_id
         WHERE scan_task.task_id = #{taskId}
+        <if test = "targetId != null and targetId != ''">
+            AND scan_target.target_id = #{targetId}
+        </if>
+        <if test = "tlsVersion != null and tlsVersion != ''">
+            AND cipher_suite_support.tls_version = #{tlsVersion}
+        </if>
         LIMIT #{offset}, #{size};
+    </select>
+
+    <select id="getCipherSuiteInfoTotalByTaskId" resultType="java.lang.Integer">
+        SELECT COUNT(*) AS total_count
+        FROM (
+        SELECT cipher_name AS cipherName,
+        is_accepted AS accepted,
+        key_size AS keySize,
+        forward_secrecy AS forwardSecrecy,
+        openssl_name AS opensslName
+        FROM cipher_suite_support
+        LEFT JOIN scan_target ON cipher_suite_support.target_id = scan_target.target_id
+        LEFT JOIN scan_task ON scan_task.task_id = scan_target.task_id
+        WHERE scan_task.task_id = #{taskId}
+        <if test = "targetId != null and targetId != ''">
+            AND scan_target.target_id = #{targetId}
+        </if>
+        <if test = "tlsVersion != null and tlsVersion != ''">
+            AND cipher_suite_support.tls_version = #{tlsVersion}
+        </if>
+             ) AS subquery
     </select>
 </mapper>
