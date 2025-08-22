@@ -1,5 +1,6 @@
 package com.example.tlstool.service;
 
+import com.alibaba.fastjson.JSONObject;
 import com.example.tlstool.entity.po.ScanTaskPO;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.example.tlstool.entity.po.TlsTaskPO;
@@ -13,7 +14,11 @@ import java.util.Set;
 * @createDate 2025-08-03 18:37:45
 */
 public interface ScanTaskService extends IService<ScanTaskPO> {
-    Long createTask (TlsCreateTaskRO tlsCreateTaskRO) throws Exception;
+    Long createTask(TlsCreateTaskRO tlsCreateTaskRO) throws Exception;
 
     ScanTaskPO getTaskInfoById(Long taskId);
+
+    JSONObject stopTask(Long taskId);
+
+    JSONObject triggerTask(Long taskId);
 }

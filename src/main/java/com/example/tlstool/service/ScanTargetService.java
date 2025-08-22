@@ -14,7 +14,7 @@ import java.util.List;
 * @createDate 2025-08-03 18:37:45
 */
 public interface ScanTargetService extends IService<ScanTargetPO> {
-    Long createTarget (Long taskId, String target);
+    Long createTarget (Long taskId, String target, int count);
 
     void  updateSslyzeTargetInfo (JsonNode serverLocation, Long targetId);
 

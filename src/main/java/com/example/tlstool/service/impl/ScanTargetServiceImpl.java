@@ -28,10 +28,11 @@ public class ScanTargetServiceImpl extends ServiceImpl<ScanTargetMapper, ScanTar
     }
 
     @Override
-    public Long createTarget (Long taskId, String target) {
+    public Long createTarget (Long taskId, String target, int count) {
         ScanTargetPO scanTargetPO = new ScanTargetPO().builder()
                 .taskId(taskId)
                 .target(target)
+                .count(count)
                 .build();
         scanTargetMapper.insert(scanTargetPO);
         return scanTargetPO.getTargetId();

@@ -1,0 +1,186 @@
+
+server:
+  port: 9082
+  servlet:
+    session:
+      cookie:
+        name: jsessionid-sc
+        http-only: true
+main:
+  allow-circular-references: true
+
+# application.yml
+pagehelper:
+  helperDialect: mysql         # 数据库方言
+  reasonable: true             # 分页合理化（页码超限时返回最后一页）
+  supportMethodsArguments: true # 支持接口参数自动分页
+
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://10.101.24.31:3306/tls?characterEncoding=UTF-8&useUnicode=true&serverTimezone=GMT%2B8&allowPublicKeyRetrieval=true
+    username: root
+    password: 123456
+    type: com.alibaba.druid.pool.DruidDataSource
+    # Druid连接池配置
+    druid:
+      initial-size: 5
+      min-idle: 5
+      max-active: 20
+      max-wait: 60000
+      time-between-eviction-runs-millis: 60000
+      min-evictable-idle-time-millis: 300000
+      validation-query: SELECT 1
+      test-while-idle: true
+      test-on-borrow: false
+      test-on-return: false
+      pool-prepared-statements: true
+      max-pool-prepared-statement-per-connection-size: 20
+      filters: stat,wall,slf4j
+      use-global-data-source-stat: true
+      connection-properties: druid.stat.mergeSql=true;druid.stat.slowSqlMillis=500
+
+xxl:
+  job:
+    tlsconfig:
+      jobgroup: 6
+      handler: TlsTask
+    userName: admin
+    password: 123456
+    admin:
+      addresses: http://10.101.24.31:9080/xxl-job-admin
+      accessToken: tlsTools
+    executor:
+      appname: tlsToolOnline
+      address:
+      ip: 10.101.24.31
+      port: 9999
+      logpath: /home/xxl-job/jobhandler
+      #        logpath: D:\code\TLS\TLSTool\src\logs
+      logretentiondays: 30
+
+#  mybatis-plus:
+#    type-handlers-package: com.example.handler
+#    configuration:
+#      map-underscore-to-camel-case: true
+#  jackson:
+#    #ge shi hua yyyy-MM-dd HH:mm:ss
+#    date-format: yyyy-MM-dd HH:mm:ss
+#    #zhi ding shi qu
+#    time-zone: GMT+8
+#  servlet:
+#    multipart:
+#      max-request-size: 500MB
+#      max-file-size: 500MB
+#  application:
+#    name: satellite-admin
+#mybatis-plus:
+#  # configuration:
+#  # log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+#  mapper-locations: classpath*:/mapper/**/*Mapper.xml
+#  global-config:
+#    db-config:
+#      id-type: ASSIGN_ID
+##  configuration:
+##    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+#server:
+#  port: 10010
+#  servlet:
+#    context-path: /satellite-admin
+#logging:
+#  #  file:
+#  #    name: logs/logs.log
+#  level:
+#    web: info
+#    sql: info
+#    root: info
+#    com.dbapp.satellite.admin.service.impl: debug
+#
+#springdoc:
+#  api-docs:
+#    enabled: true # 是否开启
+#    path: '/docs'
+#  swagger-ui:
+#    path: ''
+#
+#file:
+#  upload: D:\Program\Project\GS\AnHeng\flies\
+#
+#vulnScan:
+#  baseUrl: http://10.101.24.65:8085
+#  userName: test3
+#  password: Test123!@#
+#
+#scaScan:
+#  baseUrl: http://10.101.24.5:7002
+#  projectId: 1948314954220118017
+#  userName: admin
+#  password: R4eOahwjzYVVowM
+#
+
+
+
+
+#server:
+#  port: 9082
+#  servlet:
+#    session:
+#      cookie:
+#        name: jsessionid-sc
+#        http-only: true
+#
+#spring:
+#  main:
+#    allow-circular-references: true
+#  datasource:
+#    driver-class-name: com.mysql.cj.jdbc.Driver
+#    url: "jdbc:mysql://10.101.24.31:3306/tls?characterEncoding=UTF-8&useUnicode=true&serverTimezone=GMT%2B8&allowPublicKeyRetrieval=true"
+#    username: root
+#    password: 123456
+#    type: com.alibaba.druid.pool.DruidDataSource
+#    druid:
+#      initial-size: 5
+#      min-idle: 5
+#      max-active: 20
+#      max-wait: 60000
+#      time-between-eviction-runs-millis: 60000
+#      min-evictable-idle-time-millis: 300000
+#      validation-query: SELECT 1
+#      test-while-idle: true
+#      test-on-borrow: false
+#      test-on-return: false
+#      pool-prepared-statements: true
+#      max-pool-prepared-statement-per-connection-size: 20
+#      filters: stat,wall  # 移除了 slf4j
+#      use-global-data-source-stat: true
+#      connection-properties: druid.stat.mergeSql=true;druid.stat.slowSqlMillis=500
+#
+## MyBatis-Plus 配置（取消注释并调整）
+#mybatis-plus:
+#  mapper-locations: classpath*:/mapper/**/*Mapper.xml
+#  global-config:
+#    db-config:
+#      id-type: ASSIGN_ID
+#
+## PageHelper 配置
+#pagehelper:
+#  helperDialect: mysql
+#  reasonable: true
+#  supportMethodsArguments: true
+#
+## 其他配置（根据需要取消注释并调整）
+## jackson:
+##   date-format: yyyy-MM-dd HH:mm:ss
+##   time-zone: GMT+8
+##
+## servlet:
+##   multipart:
+##     max-request-size: 500MB
+##     max-file-size: 500MB
+##
+## logging:
+##   level:
+##     web: info
+##     sql: info
+##     root: info
+##     com.dbapp.satellite.admin.service.impl: debug

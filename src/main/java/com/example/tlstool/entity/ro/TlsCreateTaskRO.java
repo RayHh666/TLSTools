@@ -50,4 +50,14 @@ public class TlsCreateTaskRO {
      */
     private Integer isCreateReport;
 
+    /**
+     * 定时任务cron表达式
+     */
+    private String cron;
+
+    /**
+     * 执行方式 1-立即执行 'INSTANT' 2-定时执行'SCHEDULED' 3-周期执行 'PERIODIC'
+     */
+    private String execType;
+
 }

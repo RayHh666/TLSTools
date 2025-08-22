@@ -69,55 +69,61 @@ public class ScanTargetPO {
     @TableField(value = "proxy_settings" ,typeHandler = JsonNodeTypeHandler.class)
     private JsonNode proxySettings;
 
-    @Override
-    public boolean equals(Object that) {
-        if (this == that) {
-            return true;
-        }
-        if (that == null) {
-            return false;
-        }
-        if (getClass() != that.getClass()) {
-            return false;
-        }
-        ScanTargetPO other = (ScanTargetPO) that;
-        return (this.getTargetId() == null ? other.getTargetId() == null : this.getTargetId().equals(other.getTargetId()))
-            && (this.getTaskId() == null ? other.getTaskId() == null : this.getTaskId().equals(other.getTaskId()))
-            && (this.getHost() == null ? other.getHost() == null : this.getHost().equals(other.getHost()))
-            && (this.getPort() == null ? other.getPort() == null : this.getPort().equals(other.getPort()))
-            && (this.getResolvedIp() == null ? other.getResolvedIp() == null : this.getResolvedIp().equals(other.getResolvedIp()))
-            && (this.getConnectionType() == null ? other.getConnectionType() == null : this.getConnectionType().equals(other.getConnectionType()))
-            && (this.getProxySettings() == null ? other.getProxySettings() == null : this.getProxySettings().equals(other.getProxySettings()));
-    }
+    /**
+     *
+     */
+    @TableField(value = "count")
+    private int count;
 
-    @Override
-    public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + ((getTargetId() == null) ? 0 : getTargetId().hashCode());
-        result = prime * result + ((getTaskId() == null) ? 0 : getTaskId().hashCode());
-        result = prime * result + ((getHost() == null) ? 0 : getHost().hashCode());
-        result = prime * result + ((getPort() == null) ? 0 : getPort().hashCode());
-        result = prime * result + ((getResolvedIp() == null) ? 0 : getResolvedIp().hashCode());
-        result = prime * result + ((getConnectionType() == null) ? 0 : getConnectionType().hashCode());
-        result = prime * result + ((getProxySettings() == null) ? 0 : getProxySettings().hashCode());
-        return result;
-    }
+//    @Override
+//    public boolean equals(Object that) {
+//        if (this == that) {
+//            return true;
+//        }
+//        if (that == null) {
+//            return false;
+//        }
+//        if (getClass() != that.getClass()) {
+//            return false;
+//        }
+//        ScanTargetPO other = (ScanTargetPO) that;
+//        return (this.getTargetId() == null ? other.getTargetId() == null : this.getTargetId().equals(other.getTargetId()))
+//            && (this.getTaskId() == null ? other.getTaskId() == null : this.getTaskId().equals(other.getTaskId()))
+//            && (this.getHost() == null ? other.getHost() == null : this.getHost().equals(other.getHost()))
+//            && (this.getPort() == null ? other.getPort() == null : this.getPort().equals(other.getPort()))
+//            && (this.getResolvedIp() == null ? other.getResolvedIp() == null : this.getResolvedIp().equals(other.getResolvedIp()))
+//            && (this.getConnectionType() == null ? other.getConnectionType() == null : this.getConnectionType().equals(other.getConnectionType()))
+//            && (this.getProxySettings() == null ? other.getProxySettings() == null : this.getProxySettings().equals(other.getProxySettings()));
+//    }
 
-    @Override
-    public String toString() {
-        StringBuilder sb = new StringBuilder();
-        sb.append(getClass().getSimpleName());
-        sb.append(" [");
-        sb.append("Hash = ").append(hashCode());
-        sb.append(", targetId=").append(targetId);
-        sb.append(", taskId=").append(taskId);
-        sb.append(", host=").append(host);
-        sb.append(", port=").append(port);
-        sb.append(", resolvedIp=").append(resolvedIp);
-        sb.append(", connectionType=").append(connectionType);
-        sb.append(", proxySettings=").append(proxySettings);
-        sb.append("]");
-        return sb.toString();
-    }
+//    @Override
+//    public int hashCode() {
+//        final int prime = 31;
+//        int result = 1;
+//        result = prime * result + ((getTargetId() == null) ? 0 : getTargetId().hashCode());
+//        result = prime * result + ((getTaskId() == null) ? 0 : getTaskId().hashCode());
+//        result = prime * result + ((getHost() == null) ? 0 : getHost().hashCode());
+//        result = prime * result + ((getPort() == null) ? 0 : getPort().hashCode());
+//        result = prime * result + ((getResolvedIp() == null) ? 0 : getResolvedIp().hashCode());
+//        result = prime * result + ((getConnectionType() == null) ? 0 : getConnectionType().hashCode());
+//        result = prime * result + ((getProxySettings() == null) ? 0 : getProxySettings().hashCode());
+//        return result;
+//    }
+
+//    @Override
+//    public String toString() {
+//        StringBuilder sb = new StringBuilder();
+//        sb.append(getClass().getSimpleName());
+//        sb.append(" [");
+//        sb.append("Hash = ").append(hashCode());
+//        sb.append(", targetId=").append(targetId);
+//        sb.append(", taskId=").append(taskId);
+//        sb.append(", host=").append(host);
+//        sb.append(", port=").append(port);
+//        sb.append(", resolvedIp=").append(resolvedIp);
+//        sb.append(", connectionType=").append(connectionType);
+//        sb.append(", proxySettings=").append(proxySettings);
+//        sb.append("]");
+//        return sb.toString();
+//    }
 }

@@ -156,7 +156,7 @@ public class SslyzeUtils {
             if (startIndex != -1) {
                 result.delete(0, startIndex);
                 String jsonString = result.toString();
-                log.info("result: {}", jsonString);
+//                log.info("result: {}", jsonString);
                 jsonRoot = mapper.readTree(jsonString);
             }
 //            JsonParser parser = factory.createParser(process.getInputStream());

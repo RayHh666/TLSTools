@@ -32,6 +32,25 @@ spring:
       use-global-data-source-stat: true
       connection-properties: druid.stat.mergeSql=true;druid.stat.slowSqlMillis=500
 
+xxl:
+  job:
+    tlsconfig:
+      jobgroup: 5
+      handler: TlsTask
+    userName: admin
+    password: 123456
+    admin:
+      addresses: http://10.101.24.31:9080/xxl-job-admin
+      accessToken: tlsTools
+    executor:
+      appname: tlsTool
+      address:
+      ip: 10.101.6.241
+      port: 9999
+      #        logpath: /home/xxl-job/jobhandler
+      logpath: D:\code\TLS\TLSTool\src\logs
+      logretentiondays: 30
+
 # MyBatis-Plus 配置（取消注释并调整）
 mybatis-plus:
   mapper-locations: classpath*:/mapper/**/*Mapper.xml

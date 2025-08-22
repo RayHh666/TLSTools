@@ -1,7 +1,6 @@
 package com.example.tlstool.controller;
 
-import com.example.tlstool.entity.dto.CertificateChainDetailDTO;
-import com.example.tlstool.entity.dto.VulnerabilityDetectionResultDTO;
+import com.alibaba.fastjson.JSONObject;
 import com.example.tlstool.entity.po.CertificateDetailPO;
 import com.example.tlstool.entity.po.ScanTaskPO;
 import com.example.tlstool.entity.ro.TlsCreateTaskRO;
@@ -10,8 +9,11 @@ import com.example.tlstool.entity.vo.CipherSuiteInfoVO;
 import com.example.tlstool.entity.vo.ProtocolInfoVO;
 import com.example.tlstool.entity.vo.VulnerabilityDetectionResultVO;
 import com.example.tlstool.service.*;
+import com.example.tlstool.util.Resp;
 import com.example.tlstool.util.Result;
+import com.example.tlstool.util.XxlJob.XxlJobUtils;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -54,6 +56,7 @@ public class TlsController {
 //        return Result.success();// tlsTaskService.
 //    }
 
+    // TODO xxl-job创建并启动任务
     @PostMapping("/create")
     public Result createTask(@RequestBody TlsCreateTaskRO tlsCreateTaskRO){
         try {
@@ -64,6 +67,53 @@ public class TlsController {
             return Result.error(e.getMessage());
         }
     }
+
+    // TODO xxl-job暂停任务
+    /**
+     * 挂起任务
+     *
+     * @param id
+     * @return
+     * @throws
+     */
+    @GetMapping(value = "/stop")
+    public Resp stop(Long id) {
+        try {
+            JSONObject response = scanTaskService.stopTask(id);
+            if (response.containsKey("code") && 200 == (Integer) response.get("code")) {
+                return Resp.getInstantiationSuccess("成功", null, null);
+            } else {
+                throw new Exception("调用停止任务接口失败！");
+            }
+        } catch (Exception e) {
+            return Resp.getInstantiationError("失败" + e.getMessage(), null, null);
+        }
+    }
+
+
+    // TODO xxl-job 单次触发任务
+    /**
+     * 开始任务
+     *
+     * @param id
+     * @return
+     * @throws
+     */
+    @PostMapping(value = "/trigger")
+    public Resp trigger(Long id) {
+        try {
+            JSONObject response = scanTaskService.triggerTask(id);
+            if (response.containsKey("code") && 200 == (Integer) response.get("code")) {
+                return Resp.getInstantiationSuccess("成功", null, null);
+            } else {
+                throw new Exception("调用xxl-job-admin-start接口失败！");
+            }
+        } catch (Exception e) {
+            return Resp.getInstantiationError("失败" + e.getMessage(), null, null);
+        }
+    }
+
+    // TODO 删除任务
 
     @GetMapping("/protocol_info_page")
     public Result<ProtocolInfoVO> getProtocolInfoPage(Long taskId,
@@ -139,13 +189,15 @@ public class TlsController {
         }
     }
 
+    // TODO 保留历史记录
+
+    // TODO 全部入库之后再改状态  重构任务结束逻辑，将“COMPLETED”字段放在target中，最后更新task状态
+
     // TODO 查询http重定向结果
 
     // 查询证书链
 
     // TODO Resolved [org.springframework.web.method.annotation.MethodArgumentTypeMismatchException: Failed to convert value of type 'java.lang.String' to required type 'java.lang.Long'; nested exception is java.lang.NumberFormatException: For input string: "null"]
-
-    // TODO 重构任务结束逻辑，将“COMPLETED”字段放在target中，最后更新task状态
 
     // TODO  More than one TaskExecutor bean found within the context, and none is named 'taskExecutor'. Mark one of them as primary or name it 'taskExecutor' (possibly as an alias) in order to use it for async processing: [mainTaskExecutor, subTaskExecutor]
 }
