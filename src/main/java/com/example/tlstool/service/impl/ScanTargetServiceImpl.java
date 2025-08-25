@@ -40,18 +40,13 @@ public class ScanTargetServiceImpl extends ServiceImpl<ScanTargetMapper, ScanTar
 
     @Override
     public void  updateSslyzeTargetInfo (JsonNode serverLocation, Long targetId) {
-
-
-        ScanTargetPO scanTargetPO = new ScanTargetPO();
+        ScanTargetPO scanTargetPO = baseMapper.selectById(targetId);
         scanTargetPO.setProxySettings(serverLocation.findValue("http_proxy_settings"));
-
-        LambdaUpdateWrapper<ScanTargetPO> updateWrapper = new LambdaUpdateWrapper<ScanTargetPO>()
-                .eq(ScanTargetPO::getTargetId, targetId)
-                .set(ScanTargetPO::getHost, serverLocation.get("hostname").asText())
-                .set(ScanTargetPO::getPort, serverLocation.get("port").asInt())
-                .set(ScanTargetPO::getResolvedIp, serverLocation.get("ip_address").asText())
-                .set(ScanTargetPO::getConnectionType, serverLocation.get("connection_type").asText());
-        baseMapper.update(scanTargetPO, updateWrapper);
+        scanTargetPO.setHost(serverLocation.get("hostname").asText());
+        scanTargetPO.setPort(serverLocation.get("port").asInt());
+        scanTargetPO.setResolvedIp(serverLocation.get("ip_address").asText());
+        scanTargetPO.setConnectionType(serverLocation.get("connection_type").asText());
+        baseMapper.updateById(scanTargetPO);
     }
 
     @Override

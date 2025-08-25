@@ -58,9 +58,10 @@ public class ScanTaskServiceImpl extends ServiceImpl<ScanTaskMapper, ScanTaskPO>
             String jobDesc = "扫描类型：" + tlsCreateTaskRO.getTaskType() + "扫描目标：" + tlsCreateTaskRO.getTargets();
             String cron = tlsCreateTaskRO.getCron();
 
-            // 若调度类型为立即执行，cron表达式变更为当前系统时间+2s
+            // 若调度类型为立即执行，cron表达式变更为当前系统时间+10s
             if ("INSTANT".equals(tlsCreateTaskRO.getExecType())) {
-                cron = DateTimeUtils.localDateTimetoCron(createAt.plusSeconds(2));
+                cron = DateTimeUtils.localDateTimetoCron(createAt.plusSeconds(10));
+                tlsCreateTaskRO.setCron(cron);
             }
 
             // 构建xxl-job任务参数
@@ -100,6 +101,15 @@ public class ScanTaskServiceImpl extends ServiceImpl<ScanTaskMapper, ScanTaskPO>
         baseMapper.updateById(scanTaskPO);
         int xxlJobId = scanTaskPO.getXxlJobId();
         return xxlJobServiceApi.stopXxlJob(String.valueOf(xxlJobId));
+    }
+
+    @Override
+    public JSONObject startTask(Long taskId) {
+        ScanTaskPO scanTaskPO = baseMapper.selectById(taskId);
+        scanTaskPO.setStatus("STARTED");
+        baseMapper.updateById(scanTaskPO);
+        int xxlJobId = scanTaskPO.getXxlJobId();
+        return xxlJobServiceApi.startXxlJob(String.valueOf(xxlJobId));
     }
 
     @Override

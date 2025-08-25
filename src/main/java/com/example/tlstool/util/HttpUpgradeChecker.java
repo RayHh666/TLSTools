@@ -63,7 +63,27 @@ public class HttpUpgradeChecker {
         // 等待命令完成并检查退出码
         int exitCode = process.waitFor();
         if (exitCode != 0) {
-            throw new IOException("curl命令执行失败，退出码: " + exitCode);
+            switch (exitCode) {
+                case 1:
+                    throw new IOException("CURL不支持所使用的协议。curl退出码: " + exitCode);
+                case 3:
+                    throw new IOException("URL格式错误，输入的 URL 语法不正确。curl退出码: " + exitCode);
+                case 6:
+                    throw new IOException("无法解析主机地址，无法找到指定的远程主机。curl退出码: " + exitCode);
+                case 7:
+                    throw new IOException("无法连接到主机，可能是网络问题或目标主机不可用。curl退出码: " + exitCode);
+                case 28:
+                    throw new IOException("操作超时，达到指定的超时时间。curl退出码: " + exitCode);
+                case 35:
+                    throw new IOException("SSL/TLS握手失败，可能是证书问题或协议不匹配。curl退出码: " + exitCode);
+                case 47:
+                    throw new IOException("重定向次数过多。curl退出码: " + exitCode);
+                case 52:
+                    throw new IOException("服务器无响应，未返回任何数据。curl退出码:" + exitCode);
+                case 60:
+                    throw new IOException("证书验证失败，无法通过已知的 CA 证书验证。curl退出码:" + exitCode);
+            }
+
         }
         return output.toString();
     }

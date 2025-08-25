@@ -40,6 +40,14 @@ public interface ScanTaskService extends IService<ScanTaskPO> {
     JSONObject stopTask(Long taskId);
 
     /**
+     * 启用任务
+     *
+     * @param taskId
+     * @return
+     */
+    JSONObject startTask(Long taskId);
+
+    /**
      * 单次触发任务
      *
      * @param taskId

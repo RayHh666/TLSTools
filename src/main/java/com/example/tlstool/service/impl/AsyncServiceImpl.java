@@ -242,8 +242,6 @@ public class AsyncServiceImpl{
         }
     }
 
-
-    @Async
     public void singleSslyzeScan(String sslyzeCommand, String target, Long targetId, Long taskId) throws Exception {
         // 解析本次扫描结果集
         String sslyzeVersion = null;
@@ -335,7 +333,6 @@ public class AsyncServiceImpl{
         }
     }
 
-    @Async
     public void createCurlTask(String target, Long targetId ,Long taskId) {
         HttpUpgradeResultPO httpUpgradeResultPO = new HttpUpgradeResultPO().builder()
                 .targetId(targetId)

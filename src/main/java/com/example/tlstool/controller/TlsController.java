@@ -4,16 +4,11 @@ import com.alibaba.fastjson.JSONObject;
 import com.example.tlstool.entity.po.CertificateDetailPO;
 import com.example.tlstool.entity.po.ScanTaskPO;
 import com.example.tlstool.entity.ro.TlsCreateTaskRO;
-import com.example.tlstool.entity.vo.CertificateInfoVO;
-import com.example.tlstool.entity.vo.CipherSuiteInfoVO;
-import com.example.tlstool.entity.vo.ProtocolInfoVO;
-import com.example.tlstool.entity.vo.VulnerabilityDetectionResultVO;
+import com.example.tlstool.entity.vo.*;
 import com.example.tlstool.service.*;
 import com.example.tlstool.util.Resp;
 import com.example.tlstool.util.Result;
-import com.example.tlstool.util.XxlJob.XxlJobUtils;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -44,6 +39,9 @@ public class TlsController {
     @Resource
     private VulnerabilityDetectionService vulnerabilityDetectionService;
 
+    @Resource
+    private HttpUpgradeService httpUpgradeService;
+
     @PostMapping("/create")
     public Result createTask(@RequestBody TlsCreateTaskRO tlsCreateTaskRO){
         try {
@@ -56,9 +54,9 @@ public class TlsController {
     }
 
     @GetMapping(value = "/stop")
-    public Resp stop(Long id) {
+    public Resp stop(Long taskId) {
         try {
-            JSONObject response = scanTaskService.stopTask(id);
+            JSONObject response = scanTaskService.stopTask(taskId);
             if (response.containsKey("code") && 200 == (Integer) response.get("code")) {
                 return Resp.getInstantiationSuccess("成功", null, null);
             } else {
@@ -69,10 +67,24 @@ public class TlsController {
         }
     }
 
-    @PostMapping(value = "/trigger")
-    public Resp trigger(Long id) {
+    @GetMapping(value = "/start")
+    public Resp start(Long taskId) {
         try {
-            JSONObject response = scanTaskService.triggerTask(id);
+            JSONObject response = scanTaskService.startTask(taskId);
+            if (response.containsKey("code") && 200 == (Integer) response.get("code")) {
+                return Resp.getInstantiationSuccess("成功", null, null);
+            } else {
+                throw new Exception("调用开启任务接口失败！");
+            }
+        } catch (Exception e) {
+            return Resp.getInstantiationError("失败" + e.getMessage(), null, null);
+        }
+    }
+
+    @PostMapping(value = "/trigger")
+    public Resp trigger(Long taskId) {
+        try {
+            JSONObject response = scanTaskService.triggerTask(taskId);
             if (response.containsKey("code") && 200 == (Integer) response.get("code")) {
                 return Resp.getInstantiationSuccess("成功", null, null);
             } else {
@@ -84,9 +96,9 @@ public class TlsController {
     }
 
     @GetMapping(value = "/remove")
-    public Resp remove(Long id) {
+    public Resp remove(Long taskId) {
         try {
-            JSONObject response = scanTaskService.removeTaskById(id);
+            JSONObject response = scanTaskService.removeTaskById(taskId);
             if (response.containsKey("code") && 200 == (Integer) response.get("code")) {
                 return Resp.getInstantiationSuccess("成功", null, null);
             } else {
@@ -172,9 +184,19 @@ public class TlsController {
         }
     }
 
-    // TODO scheduled定时任务，遍历已完成的单次任务，并调用xxl-job stop接口停止任务
-
-    // TODO 查询http重定向结果
+    //  查询http重定向结果
+    @GetMapping("/http_redirection")
+    public Result<HttpUpgradeResultVO> getHttpRedirectionResult(Long taskId, Integer count,
+                                                                @RequestParam(defaultValue = "1") int page,
+                                                                @RequestParam(defaultValue = "10") int size) {
+        try {
+            HttpUpgradeResultVO httpUpgradeResultVO = httpUpgradeService.getHttpRedirectionResult(taskId, count, page, size);
+            return Result.success(httpUpgradeResultVO);
+        } catch (Exception e) {
+            log.error(e.toString());
+            return Result.error(e.getMessage());
+        }
+    }
 
     // 查询证书链
 

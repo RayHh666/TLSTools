@@ -16,4 +16,47 @@
         http_upgrade_result_id,target_id,status,location,errorMessage
     </sql>
 
+    <select id="getHttpRedirectionResultList" resultType="com.example.tlstool.entity.po.HttpUpgradeResultPO">
+        SELECT
+            hur.http_upgrade_result_id,
+            hur.target_id,
+            hur.target,
+            hur.`status`,
+            hur.location,
+            hur.error_message
+        FROM
+            http_upgrade_result hur
+                LEFT JOIN scan_target starget ON starget.target_id = hur.target_id
+                LEFT JOIN scan_task stask ON stask.task_id = starget.task_id
+        WHERE
+            stask.task_id = #{taskId}
+        <if test="count != null">
+            AND starget.count = #{count}
+        </if>
+        ORDER BY target_id
+        LIMIT #{offset}, #{size};
+    </select>
+
+    <select id="getHttpRedirectionResultTotal" resultType="java.lang.Integer">
+        SELECT COUNT(*) AS total_count
+        FROM (
+                SELECT
+                hur.http_upgrade_result_id,
+                hur.target_id,
+                hur.target,
+                hur.`status`,
+                hur.location,
+                hur.error_message
+                FROM
+                http_upgrade_result hur
+                LEFT JOIN scan_target starget ON starget.target_id = hur.target_id
+                LEFT JOIN scan_task stask ON stask.task_id = starget.task_id
+                WHERE
+                stask.task_id = #{taskId}
+                <if test="count != null">
+                    AND starget.count = #{count}
+                </if>
+                ORDER BY target_id
+        )  AS subquery
+    </select>
 </mapper>
