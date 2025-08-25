@@ -17,7 +17,7 @@ import java.util.List;
 public interface CertificateDetailService extends IService<CertificateDetailPO> {
     void saveCertificateDetailFromSslyze(JsonNode certificateDetails, Long certificateDeploymentId, Long pathValidationResultId);
 
-    CertificateInfoVO getCertificateInfoPage(Long taskId, int page, int size);
+    CertificateInfoVO getCertificateInfoPage(Long taskId,  Integer count, int page, int size);
 
     List<CertificateDetailPO> getCertificateChainDetail(Long certificateDeploymentId);
 }

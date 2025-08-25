@@ -20,5 +20,5 @@ public interface ScanTargetService extends IService<ScanTargetPO> {
 
     Long saveSslyzeTargetInfo (JsonNode serverLocation, Long taskId);
 
-    ProtocolInfoVO getProtocolInfoPage (Long taskId, int page, int size);
+    ProtocolInfoVO getProtocolInfoPage (Long taskId, Integer count, int page, int size);
 }

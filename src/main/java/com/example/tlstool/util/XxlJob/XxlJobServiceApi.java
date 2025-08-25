@@ -231,7 +231,6 @@ public class XxlJobServiceApi {
 //            requestInfo.put("executorRouteStrategy", "FIRST");
 //            // 执行器，任务Handler名称
 //            requestInfo.put("executorHandler", "xxxJobHandler");
-//            // todo 执行器，任务参数
 //            requestInfo.put("executorParam", "测试202006300943");
 //            // 阻塞处理策略
 //            requestInfo.put("executorBlockStrategy", "SERIAL_EXECUTION");
@@ -343,13 +342,13 @@ public class XxlJobServiceApi {
     /**
      * 删除定时任务
      */
-    public Map removeXxlJob(String jobId) {
+    public JSONObject removeXxlJob(String jobId) {
         Map<String, String> paramMap = new LinkedHashMap<>();
         paramMap.put("id", jobId);
         Map<String, String> headers = new LinkedHashMap<>();
         String cookieStr = loginCookie.get("XXL_JOB_LOGIN_IDENTITY");
         headers.put("Cookie", !ObjectUtils.isEmpty(cookieStr) ? "XXL_JOB_LOGIN_IDENTITY=" + cookieStr : "XXL_JOB_LOGIN_IDENTITY=" + loginXxlJob());
-        return JSONObject.parseObject(HttpClientUtil.doPost(basicUrl + XxlJobServiceUrl.removeXxlJob, paramMap, headers), HashMap.class);
+        return JSONObject.parseObject(HttpClientUtil.doPost(basicUrl + XxlJobServiceUrl.removeXxlJob, paramMap, headers), JSONObject.class);
     }
 
     /**

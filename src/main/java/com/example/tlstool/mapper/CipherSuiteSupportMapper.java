@@ -21,10 +21,11 @@ public interface CipherSuiteSupportMapper extends BaseMapper<CipherSuiteSupportP
     List<CipherSuiteInfoDTO> getCipherSuiteInfoPageByTaskId(@Param("taskId") Long taskId,
                                                             @Param("targetId") Long targetId,
                                                             @Param("tlsVersion") String tlsVersion,
+                                                            @Param("count") Integer count,
                                                             @Param("offset") int offset,
                                                             @Param("size") int size);
 
-    Integer getCipherSuiteInfoTotalByTaskId(@Param("taskId") Long taskId, @Param("targetId") Long targetId, @Param("tlsVersion") String tlsVersion);
+    Integer getCipherSuiteInfoTotalByTaskId(@Param("taskId") Long taskId, @Param("targetId") Long targetId, @Param("tlsVersion") String tlsVersion, @Param("count") Integer count);
 }
 
 

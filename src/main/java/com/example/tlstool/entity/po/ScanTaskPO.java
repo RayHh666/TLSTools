@@ -103,6 +103,9 @@ public class ScanTaskPO {
     @TableField(value = "exec_type")
     private String execType;
 
+    @TableField(value = "is_deleted")
+    private Integer deleted;
+
 
 //    @Override
 //    public boolean equals(Object that) {

@@ -69,11 +69,11 @@ public class ScanTargetServiceImpl extends ServiceImpl<ScanTargetMapper, ScanTar
     }
 
     @Override
-    public ProtocolInfoVO getProtocolInfoPage (Long taskId, int page, int size){
+    public ProtocolInfoVO getProtocolInfoPage (Long taskId, Integer count, int page, int size){
         ProtocolInfoVO protocolInfoVO = new ProtocolInfoVO();
         int offset = (page - 1) * size;
-        List<ProtocolInfoDTO> protocolInfoDTOList = baseMapper.getProtocolInfoPageByTaskId(taskId, offset, size);
-        Integer total = baseMapper.getProtocolInfoTotalByTaskId(taskId);
+        List<ProtocolInfoDTO> protocolInfoDTOList = baseMapper.getProtocolInfoPageByTaskId(taskId, count, offset, size);
+        Integer total = baseMapper.getProtocolInfoTotalByTaskId(taskId, count);
 
         protocolInfoVO.setTotal(total);
         protocolInfoVO.setProtocolInfoDTOList(protocolInfoDTOList);

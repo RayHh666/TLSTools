@@ -9,6 +9,7 @@ import com.example.tlstool.entity.po.ScanTaskPO;
 import com.example.tlstool.entity.ro.TlsCreateTaskRO;
 import com.example.tlstool.service.*;
 import com.example.tlstool.mapper.ScanTaskMapper;
+import com.example.tlstool.util.DateTimeUtils;
 import com.example.tlstool.util.XxlJob.XxlJobServiceApi;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.beanutils.BeanUtils;
@@ -28,8 +29,6 @@ import java.time.LocalDateTime;
 public class ScanTaskServiceImpl extends ServiceImpl<ScanTaskMapper, ScanTaskPO>
     implements ScanTaskService{
 
-//    @Resource
-//    private AsyncService asyncService;
 
     @Resource
     private XxlJobServiceApi xxlJobServiceApi;
@@ -40,39 +39,43 @@ public class ScanTaskServiceImpl extends ServiceImpl<ScanTaskMapper, ScanTaskPO>
     @Override
     public Long createTask(TlsCreateTaskRO tlsCreateTaskRO) throws Exception {
         int xxlJobId = 0;
-        log.info("target:{}", tlsCreateTaskRO.getTargets());
+        LocalDateTime createAt = LocalDateTime.now();
+
         // TODO 失败后回滚
         ScanTaskPO scanTaskPO = new ScanTaskPO().builder()
-                .taskName(tlsCreateTaskRO.getTaskName() + LocalDateTime.now())
+                .taskName(tlsCreateTaskRO.getTaskName() + createAt)
                 .xxlJobId(xxlJobId)
                 .targets(tlsCreateTaskRO.getTargets())
                 .taskType(tlsCreateTaskRO.getTaskType())
-                .createdAt(LocalDateTime.now())
+                .createdAt(createAt)
+                .execType(tlsCreateTaskRO.getExecType())
                 .cron(tlsCreateTaskRO.getCron())
                 .build();
         baseMapper.insert(scanTaskPO);
-        // 重构为 创建xxl任务，xxl建定时任务
+
         try {
             TlsCreateTaskDTO tlsCreateTaskDTO = new TlsCreateTaskDTO();
             String jobDesc = "扫描类型：" + tlsCreateTaskRO.getTaskType() + "扫描目标：" + tlsCreateTaskRO.getTargets();
             String cron = tlsCreateTaskRO.getCron();
+
+            // 若调度类型为立即执行，cron表达式变更为当前系统时间+2s
+            if ("INSTANT".equals(tlsCreateTaskRO.getExecType())) {
+                cron = DateTimeUtils.localDateTimetoCron(createAt.plusSeconds(2));
+            }
+
             // 构建xxl-job任务参数
             BeanUtils.copyProperties(tlsCreateTaskDTO, tlsCreateTaskRO);
             tlsCreateTaskDTO.setTaskId(scanTaskPO.getTaskId());
             String param = JSON.toJSONString(tlsCreateTaskDTO);
-            // 创建xxl-job任务
+
+            // 创建xxl-job任务成功则启动
             JSONObject jsonObject = xxlJobServiceApi.addXxlJob(jobDesc, cron, handler, param);
             if (jsonObject != null && jsonObject.getIntValue("code") == 200) {
                 xxlJobId = jsonObject.getIntValue("content");
                 scanTaskPO.setXxlJobId(xxlJobId);
                 scanTaskPO.setParam(param);
                 baseMapper.updateById(scanTaskPO);
-                // 启动任务
                 xxlJobServiceApi.startXxlJob(String.valueOf(xxlJobId));
-                if ("INSTANT".equals(tlsCreateTaskRO.getExecType())) {
-                    // 立即执行任务，cron表达式须为无法定时执行的表达式
-                    xxlJobServiceApi.triggerXxlJob(String.valueOf(xxlJobId), param);
-                }
             }
         } catch (Exception e) {
             log.info(e.getMessage());
@@ -80,7 +83,8 @@ public class ScanTaskServiceImpl extends ServiceImpl<ScanTaskMapper, ScanTaskPO>
             baseMapper.updateById(scanTaskPO);
             throw e;
         }
-        System.out.println("结束定时任务");
+        log.info("任务创建完成");
+
         return scanTaskPO.getTaskId();
     }
 
@@ -91,20 +95,27 @@ public class ScanTaskServiceImpl extends ServiceImpl<ScanTaskMapper, ScanTaskPO>
 
     @Override
     public JSONObject stopTask(Long taskId) {
-        // TODO 查询xxl-job_id
-        ScanTaskPO scanTaskPO = baseMapper.selectOne(new LambdaQueryWrapper<ScanTaskPO>().eq(ScanTaskPO::getTaskId, taskId).select(ScanTaskPO::getXxlJobId));
+        ScanTaskPO scanTaskPO = baseMapper.selectOne(new LambdaQueryWrapper<ScanTaskPO>().eq(ScanTaskPO::getTaskId, taskId));
+        scanTaskPO.setStatus("STOPPED");
+        baseMapper.updateById(scanTaskPO);
         int xxlJobId = scanTaskPO.getXxlJobId();
-        //      调用xxl-job stop()
         return xxlJobServiceApi.stopXxlJob(String.valueOf(xxlJobId));
     }
 
     @Override
     public JSONObject triggerTask(Long taskId) {
-        // TODO 查询xxl-job_id
         ScanTaskPO scanTaskPO = baseMapper.selectOne(new LambdaQueryWrapper<ScanTaskPO>().eq(ScanTaskPO::getTaskId, taskId));
         int xxlJobId = scanTaskPO.getXxlJobId();
-        //      调用xxl-job trigger()
         return xxlJobServiceApi.triggerXxlJob(String.valueOf(xxlJobId), scanTaskPO.getParam());
+    }
+
+    @Override
+    public JSONObject removeTaskById(Long taskId) {
+        ScanTaskPO scanTaskPO = baseMapper.selectById(taskId);
+        scanTaskPO.setDeleted(1);
+        baseMapper.updateById(scanTaskPO);
+        int xxlJobId = scanTaskPO.getXxlJobId();
+        return xxlJobServiceApi.removeXxlJob(String.valueOf(xxlJobId));
     }
 }
 

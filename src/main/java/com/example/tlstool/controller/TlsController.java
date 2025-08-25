@@ -24,9 +24,7 @@ import java.util.List;
 @Slf4j
 public class TlsController {
 
-    // TODO
-    //  1、通过目标列表创建任务
-    //  2、上传目标列表文件创建任务
+    // TODO 上传目标列表文件创建任务
 
     @Resource
     private TlsTaskService tlsTaskService;
@@ -46,17 +44,6 @@ public class TlsController {
     @Resource
     private VulnerabilityDetectionService vulnerabilityDetectionService;
 
-//    @PostMapping("/create")
-//    public Result createTask(@RequestBody TlsCreateTaskRO tlsCreateTaskRO){
-//        try {
-//            tlsTaskService.createTask(tlsCreateTaskRO);
-//        } catch (Exception e) {
-//            return Result.error(e.getMessage());
-//        }
-//        return Result.success();// tlsTaskService.
-//    }
-
-    // TODO xxl-job创建并启动任务
     @PostMapping("/create")
     public Result createTask(@RequestBody TlsCreateTaskRO tlsCreateTaskRO){
         try {
@@ -68,14 +55,6 @@ public class TlsController {
         }
     }
 
-    // TODO xxl-job暂停任务
-    /**
-     * 挂起任务
-     *
-     * @param id
-     * @return
-     * @throws
-     */
     @GetMapping(value = "/stop")
     public Resp stop(Long id) {
         try {
@@ -90,15 +69,6 @@ public class TlsController {
         }
     }
 
-
-    // TODO xxl-job 单次触发任务
-    /**
-     * 开始任务
-     *
-     * @param id
-     * @return
-     * @throws
-     */
     @PostMapping(value = "/trigger")
     public Resp trigger(Long id) {
         try {
@@ -113,14 +83,27 @@ public class TlsController {
         }
     }
 
-    // TODO 删除任务
+    @GetMapping(value = "/remove")
+    public Resp remove(Long id) {
+        try {
+            JSONObject response = scanTaskService.removeTaskById(id);
+            if (response.containsKey("code") && 200 == (Integer) response.get("code")) {
+                return Resp.getInstantiationSuccess("成功", null, null);
+            } else {
+                throw new Exception("调用停止任务接口失败！");
+            }
+        } catch (Exception e) {
+            return Resp.getInstantiationError("失败" + e.getMessage(), null, null);
+        }
+    }
 
     @GetMapping("/protocol_info_page")
     public Result<ProtocolInfoVO> getProtocolInfoPage(Long taskId,
+                                                         Integer count,
                                                          @RequestParam(defaultValue = "1") int page,
                                                          @RequestParam(defaultValue = "10") int size) {
         try {
-            ProtocolInfoVO protocolInfoPage =  scanTargetService.getProtocolInfoPage(taskId, page, size);
+            ProtocolInfoVO protocolInfoPage =  scanTargetService.getProtocolInfoPage(taskId, count, page, size);
             return Result.success(protocolInfoPage);
         } catch (Exception e) {
             log.error(e.toString());
@@ -129,11 +112,11 @@ public class TlsController {
     }
 
     @GetMapping("/cipher_suite_info_page")
-    public Result<CipherSuiteInfoVO> getCipherSuiteInfoPage(Long taskId, Long targetId, String tlsVersion,
-                                                               @RequestParam(defaultValue = "1") int page,
+    public Result<CipherSuiteInfoVO> getCipherSuiteInfoPage(Long taskId, Long targetId, String tlsVersion, Integer count,
+                                                            @RequestParam(defaultValue = "1") int page,
                                                                @RequestParam(defaultValue = "10") int size) {
         try {
-            CipherSuiteInfoVO cipherSuiteInfoPage = cipherSuiteSupportService.getCipherSuiteInfoPage(taskId, targetId, tlsVersion, page, size);
+            CipherSuiteInfoVO cipherSuiteInfoPage = cipherSuiteSupportService.getCipherSuiteInfoPage(taskId, targetId, tlsVersion, count, page, size);
             return Result.success(cipherSuiteInfoPage);
         } catch (Exception e) {
             log.error(e.toString());
@@ -142,11 +125,11 @@ public class TlsController {
     }
 
     @GetMapping("/certificate_info_page")
-    public Result<CertificateInfoVO> getCertificateInfoPage(Long taskId,
+    public Result<CertificateInfoVO> getCertificateInfoPage(Long taskId, Integer count,
                                                             @RequestParam(defaultValue = "1") int page,
                                                             @RequestParam(defaultValue = "10") int size) {
         try {
-            CertificateInfoVO certificateInfoPage = certificateDetailService.getCertificateInfoPage(taskId, page, size);
+            CertificateInfoVO certificateInfoPage = certificateDetailService.getCertificateInfoPage(taskId, count, page, size);
             return Result.success(certificateInfoPage);
         } catch (Exception e) {
             log.error(e.toString());
@@ -166,11 +149,11 @@ public class TlsController {
     }
 
     @GetMapping("/vulnerability_detection_result")
-    public Result<VulnerabilityDetectionResultVO> getVulnerabilityDetectionResult(Long taskId,
+    public Result<VulnerabilityDetectionResultVO> getVulnerabilityDetectionResult(Long taskId, Integer count,
                                                                                   @RequestParam(defaultValue = "1") int page,
                                                                                   @RequestParam(defaultValue = "10") int size) {
         try {
-            VulnerabilityDetectionResultVO VulnerabilityDetectionResultList = vulnerabilityDetectionService.getVulnerabilityDetectionResultList(taskId, page, size);
+            VulnerabilityDetectionResultVO VulnerabilityDetectionResultList = vulnerabilityDetectionService.getVulnerabilityDetectionResultList(taskId, count, page, size);
             return Result.success(VulnerabilityDetectionResultList);
         } catch (Exception e) {
             log.error(e.toString());
@@ -189,9 +172,7 @@ public class TlsController {
         }
     }
 
-    // TODO 保留历史记录
-
-    // TODO 全部入库之后再改状态  重构任务结束逻辑，将“COMPLETED”字段放在target中，最后更新task状态
+    // TODO scheduled定时任务，遍历已完成的单次任务，并调用xxl-job stop接口停止任务
 
     // TODO 查询http重定向结果
 

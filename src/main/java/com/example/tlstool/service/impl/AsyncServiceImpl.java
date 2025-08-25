@@ -32,8 +32,7 @@ import javax.annotation.Resource;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.*;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.Executor;
+import java.util.concurrent.*;
 
 @Slf4j
 @Component
@@ -72,76 +71,175 @@ public class AsyncServiceImpl{
     private Executor subTaskExecutor;
 
 //    @Async("mainTaskExecutor")
-    @XxlJob("TlsTask")
-    public void createAsyncTask () throws Exception {
-        XxlJobHelper.log("=================start async task=================");
+//    @XxlJob("TlsTask")
+//    public void createAsyncTask () throws Exception {
+//        XxlJobHelper.log("=================start async task=================");
+//
+//        String param = XxlJobHelper.getJobParam();
+//        log.info("param: {}", param);
+//        TlsCreateTaskDTO tlsCreateTaskDTO = JSON.parseObject(param, TlsCreateTaskDTO.class);
+//
+//        // 获取当前任务已执行次数并更新
+//        ScanTaskPO scanTaskPO = scanTaskMapper.selectOne(new LambdaQueryWrapper<ScanTaskPO>().eq(ScanTaskPO::getTaskId ,tlsCreateTaskDTO.getTaskId()));
+//        int count = scanTaskPO.getCount() + 1;
+//        scanTaskPO.setCount(count);
+//        scanTaskPO.setStatus("PENDING");
+//        scanTaskMapper.updateById(scanTaskPO);
+//
+//        String sslyzeCommand = "";
+//        // 扫描目标
+//        Set<String> targetSet = new HashSet<>(Arrays.asList(tlsCreateTaskDTO.getTargets().split(",")));
+//        // String targetsStr = tlsCreateTaskRO.getTargets().trim().replace(",", " ");
+//
+//        // TLS扫描参数
+//        if (StringUtils.isNotBlank(tlsCreateTaskDTO.getTlsProtocols())) {
+//            Set<String> tlsProtocolSet = new HashSet<>(Arrays.asList(tlsCreateTaskDTO.getTlsProtocols().split(",")));
+//            for (String tlsProtocol: tlsProtocolSet) {
+//                sslyzeCommand = sslyzeCommand + " --" + tlsProtocol;
+//            }
+//        }
+//
+//        // STARTTLS扫描参数
+//        if (StringUtils.isNotBlank(tlsCreateTaskDTO.getStarttlsMailProtocol())) {
+//            sslyzeCommand = sslyzeCommand + " --starttls=" + tlsCreateTaskDTO.getStarttlsMailProtocol();
+//        }
+//
+//        // 漏洞扫描参数
+//        sslyzeCommand = sslyzeCommand + " --heartbleed --reneg --robot --compression --elliptic_curves --openssl_ccs --certinfo";
+//
+//        final String finalSslyzeCommand = sslyzeCommand;
+//
+//        List<CompletableFuture<Void>> futures = new ArrayList<>();
+//
+//        for (String target : targetSet) {
+//            futures.add(CompletableFuture.runAsync(() ->
+//                    {
+//                        Long targetId = scanTargetService.createTarget(tlsCreateTaskDTO.getTaskId(), target, count);
+//                        try {
+//                            if (tlsCreateTaskDTO.getTaskType().contains("STARTTLS_SCAN") || tlsCreateTaskDTO.getTaskType().contains("TLS_SCAN")) {
+//                                singleSslyzeScan(finalSslyzeCommand, target, targetId, tlsCreateTaskDTO.getTaskId());
+//                            }
+//
+//                        } catch (Exception e) {
+//                            throw new RuntimeException(e);
+//                        }
+//
+//                        try {
+//                            if (tlsCreateTaskDTO.getTaskType().contains("HTTP_SCAN")) {
+//                                createCurlTask(target, targetId ,tlsCreateTaskDTO.getTaskId());
+//                            }
+//                        } catch (Exception e) {
+//                            throw new RuntimeException(e);
+//                        }
+//                    },
+//                    subTaskExecutor // 专用子任务线程池
+//            ));
+//        }
+//        CompletableFuture<Void> allFutures = CompletableFuture.allOf(
+//                futures.toArray(new CompletableFuture[0])
+//        );
+//        allFutures.join();
+//        scanTaskPO.setStatus("COMPLETED");
+//        scanTaskMapper.updateById(scanTaskPO);
+//    }
 
+    @XxlJob("TlsTask")
+    public void createAsyncTask() throws Exception {
+        XxlJobHelper.log("=================start async task=================");
         String param = XxlJobHelper.getJobParam();
         log.info("param: {}", param);
         TlsCreateTaskDTO tlsCreateTaskDTO = JSON.parseObject(param, TlsCreateTaskDTO.class);
 
-        // 获取当前任务已执行次数并更新
-        ScanTaskPO scanTaskPO = scanTaskMapper.selectOne(new LambdaQueryWrapper<ScanTaskPO>().eq(ScanTaskPO::getTaskId ,tlsCreateTaskDTO.getTaskId()));
+        // 更新任务状态
+        ScanTaskPO scanTaskPO = scanTaskMapper.selectOne(
+                new LambdaQueryWrapper<ScanTaskPO>().eq(ScanTaskPO::getTaskId, tlsCreateTaskDTO.getTaskId())
+        );
         int count = scanTaskPO.getCount() + 1;
         scanTaskPO.setCount(count);
         scanTaskPO.setStatus("PENDING");
         scanTaskMapper.updateById(scanTaskPO);
 
-        String sslyzeCommand = "";
-        // 扫描目标
-        Set<String> targetSet = new HashSet<>(Arrays.asList(tlsCreateTaskDTO.getTargets().split(",")));
-        // String targetsStr = tlsCreateTaskRO.getTargets().trim().replace(",", " ");
-
-        // TLS扫描参数
+        // 构建SSLyze命令
+        StringBuilder sslyzeCommand = new StringBuilder();
         if (StringUtils.isNotBlank(tlsCreateTaskDTO.getTlsProtocols())) {
-            Set<String> tlsProtocolSet = new HashSet<>(Arrays.asList(tlsCreateTaskDTO.getTlsProtocols().split(",")));
-            for (String tlsProtocol: tlsProtocolSet) {
-                sslyzeCommand = sslyzeCommand + " --" + tlsProtocol;
-            }
+            Arrays.stream(tlsCreateTaskDTO.getTlsProtocols().split(","))
+                    .forEach(protocol -> sslyzeCommand.append(" --").append(protocol));
         }
-
-        // STARTTLS扫描参数
         if (StringUtils.isNotBlank(tlsCreateTaskDTO.getStarttlsMailProtocol())) {
-            sslyzeCommand = sslyzeCommand + " --starttls=" + tlsCreateTaskDTO.getStarttlsMailProtocol();
+            sslyzeCommand.append(" --starttls=").append(tlsCreateTaskDTO.getStarttlsMailProtocol());
         }
+        sslyzeCommand.append(" --heartbleed --reneg --robot --compression --elliptic_curves --openssl_ccs --certinfo");
+        final String finalSslyzeCommand = sslyzeCommand.toString();
 
-        // 漏洞扫描参数
-        sslyzeCommand = sslyzeCommand + " --heartbleed --reneg --robot --compression --elliptic_curves --openssl_ccs --certinfo";
-
-        final String finalSslyzeCommand = sslyzeCommand;
-
+        // 创建线程池（根据任务量动态配置）
+        int corePoolSize = Runtime.getRuntime().availableProcessors();
+        int maxPoolSize = corePoolSize * 2;
+        ThreadPoolExecutor subTaskExecutor = new ThreadPoolExecutor(
+                corePoolSize,
+                maxPoolSize,
+                60L, TimeUnit.SECONDS,
+                new LinkedBlockingQueue<>(100),
+                new ThreadPoolExecutor.CallerRunsPolicy() // 避免任务丢失
+        );
         List<CompletableFuture<Void>> futures = new ArrayList<>();
 
-        for (String target : targetSet) {
-            futures.add(CompletableFuture.runAsync(() ->
-                    {
-                        Long targetId = scanTargetService.createTarget(tlsCreateTaskDTO.getTaskId(), target, count);
-                        try {
-                            if (tlsCreateTaskDTO.getTaskType().contains("STARTTLS_SCAN") || tlsCreateTaskDTO.getTaskType().contains("TLS_SCAN")) {
-                                singleSslyzeScan(finalSslyzeCommand, target, targetId, tlsCreateTaskDTO.getTaskId());
-                            }
+        try {
+            // 提交所有子任务
+            Set<String> targetSet = new HashSet<>(Arrays.asList(tlsCreateTaskDTO.getTargets().split(",")));
 
-                        } catch (Exception e) {
-                            throw new RuntimeException(e);
+            for (String target : targetSet) {
+                CompletableFuture<Void> future = CompletableFuture.runAsync(() -> {
+                    Long targetId = scanTargetService.createTarget(tlsCreateTaskDTO.getTaskId(), target, count);
+                    try {
+                        if (tlsCreateTaskDTO.getTaskType().contains("STARTTLS_SCAN") ||
+                                tlsCreateTaskDTO.getTaskType().contains("TLS_SCAN")) {
+                            singleSslyzeScan(finalSslyzeCommand, target, targetId, tlsCreateTaskDTO.getTaskId());
                         }
+                        if (tlsCreateTaskDTO.getTaskType().contains("HTTP_SCAN")) {
+                            createCurlTask(target, targetId, tlsCreateTaskDTO.getTaskId());
+                        }
+                    } catch (Exception e) {
+                        log.error("子任务执行失败: target={}, error={}", target, e.getMessage());
+                        throw new CompletionException(e); // 传播异常
+                    }
+                }, subTaskExecutor).exceptionally(ex -> {
+                    log.error("子任务异常: target={}, error={}", target, ex.getMessage());
+                    return null;
+                });
+                futures.add(future);
+            }
 
-                        try {
-                            if (tlsCreateTaskDTO.getTaskType().contains("HTTP_SCAN")) {
-                                createCurlTask(target, targetId ,tlsCreateTaskDTO.getTaskId());
-                            }
-                        } catch (Exception e) {
-                            throw new RuntimeException(e);
-                        }
-                    },
-                    subTaskExecutor // 专用子任务线程池
-            ));
+            // 等待所有任务完成（带超时控制）
+            CompletableFuture<Void> allFutures = CompletableFuture.allOf(futures.toArray(new CompletableFuture[0]));
+            allFutures.get(30, TimeUnit.MINUTES); // 设置合理超时避免永久阻塞[7,11](@ref)
+            // 主任务完成后更新task状态
+            scanTaskPO.setStatus("COMPLETED");
+        } catch (TimeoutException e) {
+            log.error("任务执行超时", e);
+            scanTaskPO.setStatus("FAILED");
+            // 取消未完成的任务
+            futures.forEach(f -> f.cancel(true));
+        } catch (Exception e) {
+            log.error("任务执行异常", e);
+            scanTaskPO.setStatus("FAILED");
+        } finally {
+            // 确保线程池关闭[9,10,11](@ref)
+            shutdownExecutor(subTaskExecutor);
+            scanTaskMapper.updateById(scanTaskPO);
         }
-        CompletableFuture<Void> allFutures = CompletableFuture.allOf(
-                futures.toArray(new CompletableFuture[0])
-        );
-        allFutures.join();
-        scanTaskPO.setStatus("COMPLETED");
-        scanTaskMapper.updateById(scanTaskPO);
+    }
+
+    // 安全关闭线程池
+    private void shutdownExecutor(ExecutorService executor) {
+        executor.shutdown();
+        try {
+            if (!executor.awaitTermination(30, TimeUnit.SECONDS)) {
+                executor.shutdownNow(); // 强制终止残留任务
+            }
+        } catch (InterruptedException e) {
+            executor.shutdownNow();
+            Thread.currentThread().interrupt();
+        }
     }
 
 

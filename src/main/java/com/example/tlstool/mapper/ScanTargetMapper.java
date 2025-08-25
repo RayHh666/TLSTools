@@ -16,9 +16,9 @@ import java.util.List;
 */
 @Mapper
 public interface ScanTargetMapper extends BaseMapper<ScanTargetPO> {
-    List<ProtocolInfoDTO> getProtocolInfoPageByTaskId(@Param("taskId") Long taskId, @Param("offset") int offset, @Param("size") int size);
+    List<ProtocolInfoDTO> getProtocolInfoPageByTaskId(@Param("taskId") Long taskId, @Param("count") Integer count, @Param("offset") int offset, @Param("size") int size);
 
-    Integer getProtocolInfoTotalByTaskId(@Param("taskId") Long taskId);
+    Integer getProtocolInfoTotalByTaskId(@Param("taskId") Long taskId, @Param("count") Integer count);
 }
 
 

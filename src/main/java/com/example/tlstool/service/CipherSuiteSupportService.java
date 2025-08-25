@@ -17,5 +17,5 @@ import java.util.List;
 public interface CipherSuiteSupportService extends IService<CipherSuiteSupportPO> {
     void saveCipherSuiteSupportInfo(JsonNode cipherSuiteSupportInfo, Long targetId);
 
-    CipherSuiteInfoVO getCipherSuiteInfoPage(Long taskId, Long targetId, String tlsVersion, int page, int size);
+    CipherSuiteInfoVO getCipherSuiteInfoPage(Long taskId, Long targetId, String tlsVersion, Integer count, int page, int size);
 }

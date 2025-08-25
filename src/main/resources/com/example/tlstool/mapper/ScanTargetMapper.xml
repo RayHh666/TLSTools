@@ -31,6 +31,9 @@
                  RIGHT JOIN scan_target starget ON stask.task_id = starget.task_id
                  RIGHT JOIN cipher_suite_support css ON starget.target_id = css.target_id
         WHERE stask.task_id = #{taskId}
+          <if test="count != null">
+              AND starget.count = #{count}
+          </if>
         LIMIT #{offset}, #{size};
     </select>
 
@@ -47,6 +50,9 @@
                           RIGHT JOIN scan_target starget ON stask.task_id = starget.task_id
                           RIGHT JOIN cipher_suite_support css ON starget.target_id = css.target_id
                  WHERE stask.task_id = #{taskId}
+                <if test="count != null">
+                    AND starget.count = #{count}
+                </if>
              ) AS subquery
     </select>
 </mapper>

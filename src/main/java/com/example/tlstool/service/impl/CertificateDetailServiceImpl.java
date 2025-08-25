@@ -128,11 +128,11 @@ public class CertificateDetailServiceImpl extends ServiceImpl<CertificateDetailM
     }
 
     @Override
-    public CertificateInfoVO getCertificateInfoPage(Long taskId, int page, int size) {
+    public CertificateInfoVO getCertificateInfoPage(Long taskId,  Integer count, int page, int size) {
         CertificateInfoVO  certificateInfoVO = new CertificateInfoVO();
         int offset = (page - 1) * size;
-        List<CertificateInfoDTO> certificateInfoDTOList = baseMapper.getCertificateInfoPageByTaskId(taskId, offset, size);
-        Integer total = baseMapper.getCertificateInfoTotalByTaskId(taskId);
+        List<CertificateInfoDTO> certificateInfoDTOList = baseMapper.getCertificateInfoPageByTaskId(taskId, count, offset, size);
+        Integer total = baseMapper.getCertificateInfoTotalByTaskId(taskId, count);
         certificateInfoVO.setTotal(total);
         certificateInfoVO.setCertificateInfoDTOList(certificateInfoDTOList);
         return certificateInfoVO;

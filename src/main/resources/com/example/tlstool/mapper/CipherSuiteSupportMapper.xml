@@ -27,14 +27,17 @@
                forward_secrecy AS forwardSecrecy,
                openssl_name AS opensslName
         FROM cipher_suite_support
-                 LEFT JOIN scan_target ON cipher_suite_support.target_id = scan_target.target_id
-                 LEFT JOIN scan_task ON scan_task.task_id = scan_target.task_id
+                 LEFT JOIN scan_target starget ON cipher_suite_support.target_id = starget.target_id
+                 LEFT JOIN scan_task ON scan_task.task_id = starget.task_id
         WHERE scan_task.task_id = #{taskId}
         <if test = "targetId != null and targetId != ''">
-            AND scan_target.target_id = #{targetId}
+            AND starget.target_id = #{targetId}
         </if>
         <if test = "tlsVersion != null and tlsVersion != ''">
             AND cipher_suite_support.tls_version = #{tlsVersion}
+        </if>
+        <if test="count != null">
+            AND starget.count = #{count}
         </if>
         LIMIT #{offset}, #{size};
     </select>
@@ -48,14 +51,17 @@
         forward_secrecy AS forwardSecrecy,
         openssl_name AS opensslName
         FROM cipher_suite_support
-        LEFT JOIN scan_target ON cipher_suite_support.target_id = scan_target.target_id
-        LEFT JOIN scan_task ON scan_task.task_id = scan_target.task_id
+        LEFT JOIN scan_target starget ON cipher_suite_support.target_id = starget.target_id
+        LEFT JOIN scan_task ON scan_task.task_id = starget.task_id
         WHERE scan_task.task_id = #{taskId}
         <if test = "targetId != null and targetId != ''">
-            AND scan_target.target_id = #{targetId}
+            AND starget.target_id = #{targetId}
         </if>
         <if test = "tlsVersion != null and tlsVersion != ''">
             AND cipher_suite_support.tls_version = #{tlsVersion}
+        </if>
+        <if test="count != null">
+            AND starget.count = #{count}
         </if>
              ) AS subquery
     </select>

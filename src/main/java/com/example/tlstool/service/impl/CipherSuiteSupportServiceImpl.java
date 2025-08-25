@@ -58,11 +58,11 @@ public class CipherSuiteSupportServiceImpl extends ServiceImpl<CipherSuiteSuppor
     }
 
     @Override
-    public CipherSuiteInfoVO getCipherSuiteInfoPage(Long taskId, Long targetId, String tlsVersion, int page, int size) {
+    public CipherSuiteInfoVO getCipherSuiteInfoPage(Long taskId, Long targetId, String tlsVersion, Integer count, int page, int size) {
         CipherSuiteInfoVO cipherSuiteInfoVO = new CipherSuiteInfoVO();
         int offset = (page - 1) * size;
-        List<CipherSuiteInfoDTO> cipherSuiteInfoDTOList = baseMapper.getCipherSuiteInfoPageByTaskId(taskId, targetId, tlsVersion, offset, size);
-        Integer total = baseMapper.getCipherSuiteInfoTotalByTaskId(taskId, targetId, tlsVersion);
+        List<CipherSuiteInfoDTO> cipherSuiteInfoDTOList = baseMapper.getCipherSuiteInfoPageByTaskId(taskId, targetId, tlsVersion, count, offset, size);
+        Integer total = baseMapper.getCipherSuiteInfoTotalByTaskId(taskId, targetId, tlsVersion, count);
         cipherSuiteInfoVO.setTotal(total);
         cipherSuiteInfoVO.setCipherSuiteInfoDTOList(cipherSuiteInfoDTOList);
         return cipherSuiteInfoVO;

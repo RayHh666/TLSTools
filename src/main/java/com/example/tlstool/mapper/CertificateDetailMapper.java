@@ -17,9 +17,9 @@ import java.util.List;
 */
 @Mapper
 public interface CertificateDetailMapper extends BaseMapper<CertificateDetailPO> {
-    List<CertificateInfoDTO> getCertificateInfoPageByTaskId(@Param("taskId") Long taskId, @Param("offset") int offset, @Param("size") int size);
+    List<CertificateInfoDTO> getCertificateInfoPageByTaskId(@Param("taskId") Long taskId, @Param("count") Integer count, @Param("offset") int offset, @Param("size") int size);
 
-    Integer getCertificateInfoTotalByTaskId(@Param("taskId") Long taskId);
+    Integer getCertificateInfoTotalByTaskId(@Param("taskId") Long taskId, @Param("count") Integer count);
 
     List<CertificateDetailPO> getCertificateChainDetail(@Param("certificateDeploymentId") Long certificateDeploymentId);
 }

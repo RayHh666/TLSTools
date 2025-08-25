@@ -101,6 +101,9 @@
                  RIGHT JOIN certificate_deployment cdeployment ON cdeployment.target_id = starget.target_id
                  RIGHT JOIN certificate_detail cdetail ON cdetail.certificate_deployment_id = cdeployment.certificate_deployment_id
         WHERE stask.task_id = #{taskId}
+        <if test="count != null">
+            AND starget.count = #{count}
+        </if>
         ORDER BY cdetail.certificate_deployment_id, cdetail.certificate_detail_index
         LIMIT #{offset}, #{size};
     </select>
@@ -155,12 +158,15 @@
                           RIGHT JOIN certificate_deployment cdeployment ON cdeployment.target_id = starget.target_id
                           RIGHT JOIN certificate_detail cdetail ON cdetail.certificate_deployment_id = cdeployment.certificate_deployment_id
                  WHERE stask.task_id = #{taskId}
+                 <if test="count != null">
+                    AND starget.count = #{count}
+                 </if>
                  ORDER BY cdetail.certificate_deployment_id, cdetail.certificate_detail_index
              )  AS subquery
     </select>
     <select id="getCertificateChainDetail"
             resultType="com.example.tlstool.entity.po.CertificateDetailPO">
-        SELECT * FROM certificate_detail WHERE certificate_deployment_id = 3
+        SELECT * FROM certificate_detail WHERE certificate_deployment_id = #{certificateDeploymentId}
         ORDER BY certificate_detail_index
     </select>
 </mapper>
