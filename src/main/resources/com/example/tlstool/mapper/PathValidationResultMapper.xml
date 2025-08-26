@@ -20,4 +20,12 @@
         path_validation_result_id,certificate_deployment_id,trust_store_path,trust_store_name,trust_store_version,validation_error,
         was_validation_successful,trust_store_ev_oids,index
     </sql>
+    <select id="getPathValidationResults" resultType="com.example.tlstool.entity.dto.ValidationResultDTO">
+        SELECT trust_store_name,
+               trust_store_version,
+               validation_error,
+               was_validation_successful
+        FROM path_validation_result
+        WHERE certificate_deployment_id = #{certificateDeploymentId}
+    </select>
 </mapper>

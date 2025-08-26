@@ -1,7 +1,6 @@
 package com.example.tlstool.service;
 
-import com.example.tlstool.entity.dto.CertificateChainDetailDTO;
-import com.example.tlstool.entity.dto.CertificateInfoDTO;
+import com.example.tlstool.entity.dto.CertificateChainDTO;
 import com.example.tlstool.entity.po.CertificateDetailPO;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.example.tlstool.entity.vo.CertificateInfoVO;
@@ -19,5 +18,5 @@ public interface CertificateDetailService extends IService<CertificateDetailPO> 
 
     CertificateInfoVO getCertificateInfoPage(Long taskId,  Integer count, int page, int size);
 
-    List<CertificateDetailPO> getCertificateChainDetail(Long certificateDeploymentId);
+    CertificateChainDTO getCertificateChainDetail(Long certificateDeploymentId);
 }

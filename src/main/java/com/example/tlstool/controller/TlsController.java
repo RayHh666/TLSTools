@@ -1,6 +1,7 @@
 package com.example.tlstool.controller;
 
 import com.alibaba.fastjson.JSONObject;
+import com.example.tlstool.entity.dto.CertificateChainDTO;
 import com.example.tlstool.entity.po.CertificateDetailPO;
 import com.example.tlstool.entity.po.ScanTaskPO;
 import com.example.tlstool.entity.ro.TlsCreateTaskRO;
@@ -150,9 +151,9 @@ public class TlsController {
     }
 
     @GetMapping("/received_certificate_chain")
-    public Result<List<CertificateDetailPO>> getReceivedCertificateChain(Long certificateDeploymentId) {
+    public Result<CertificateChainDTO> getReceivedCertificateChain(Long certificateDeploymentId) {
         try {
-            List<CertificateDetailPO> certificateChainDetailDTOList = certificateDetailService.getCertificateChainDetail(certificateDeploymentId);
+            CertificateChainDTO certificateChainDetailDTOList = certificateDetailService.getCertificateChainDetail(certificateDeploymentId);
             return Result.success(certificateChainDetailDTOList);
         } catch (Exception e) {
             log.error(e.toString());

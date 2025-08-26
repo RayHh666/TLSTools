@@ -1,6 +1,7 @@
 package com.example.tlstool.service.impl;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.example.tlstool.entity.dto.ValidationResultDTO;
 import com.example.tlstool.entity.po.PathValidationResultPO;
 import com.example.tlstool.service.CertificateDetailService;
 import com.example.tlstool.service.PathValidationResultService;
@@ -9,6 +10,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.util.List;
 
 /**
 * @author admin
@@ -22,6 +24,7 @@ public class PathValidationResultServiceImpl extends ServiceImpl<PathValidationR
     @Resource
     private CertificateDetailService certificateDetailService;
 
+    @Override
     public void savePahtValidationResultFromSslyze(JsonNode pathValidationResults, Long certificateDeploymentId) {
         if (pathValidationResults != null && pathValidationResults.isArray()) {
             Integer index = 0;
@@ -60,6 +63,11 @@ public class PathValidationResultServiceImpl extends ServiceImpl<PathValidationR
                 index++;
             }
         }
+    }
+
+    @Override
+    public List<ValidationResultDTO> getPathValidationResults(Long certificateDeploymentId) {
+        return baseMapper.getPathValidationResults(certificateDeploymentId);
     }
 }
 

@@ -1,16 +1,21 @@
 package com.example.tlstool.service.impl;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.example.tlstool.entity.dto.CertificateChainDTO;
 import com.example.tlstool.entity.dto.CertificateInfoDTO;
+import com.example.tlstool.entity.dto.ValidationResultDTO;
 import com.example.tlstool.entity.po.CertificateDetailPO;
 import com.example.tlstool.entity.vo.CertificateInfoVO;
+import com.example.tlstool.mapper.PathValidationResultMapper;
 import com.example.tlstool.service.CertificateDetailService;
 import com.example.tlstool.mapper.CertificateDetailMapper;
+import com.example.tlstool.service.PathValidationResultService;
 import com.example.tlstool.util.DateTimeUtils;
 import com.fasterxml.jackson.databind.JsonNode;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.Resource;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -22,6 +27,9 @@ import java.util.List;
 @Service
 public class CertificateDetailServiceImpl extends ServiceImpl<CertificateDetailMapper, CertificateDetailPO>
     implements CertificateDetailService{
+
+    @Resource
+    PathValidationResultMapper pathValidationResultMapper;
 
     @Async
     @Override
@@ -175,8 +183,13 @@ public class CertificateDetailServiceImpl extends ServiceImpl<CertificateDetailM
     }
 
     @Override
-    public List<CertificateDetailPO> getCertificateChainDetail(Long certificateDeploymentId) {
-        return baseMapper.getCertificateChainDetail(certificateDeploymentId);
+    public CertificateChainDTO getCertificateChainDetail(Long certificateDeploymentId) {
+        CertificateChainDTO certificateChainDTO = new CertificateChainDTO();
+        List<CertificateDetailPO> certificateDetailPOList = baseMapper.getCertificateChainDetail(certificateDeploymentId);
+        List<ValidationResultDTO> validationResultDTOList = pathValidationResultMapper.getPathValidationResults(certificateDeploymentId);
+        certificateChainDTO.setCertificateDetailPOList(certificateDetailPOList);
+        certificateChainDTO.setValidationResultDTOList(validationResultDTOList);
+        return certificateChainDTO;
     }
 }
 

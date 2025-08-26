@@ -1,6 +1,5 @@
 package com.example.tlstool.mapper;
 
-import com.example.tlstool.entity.dto.CertificateChainDetailDTO;
 import com.example.tlstool.entity.dto.CertificateInfoDTO;
 import com.example.tlstool.entity.po.CertificateDetailPO;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;

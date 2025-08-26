@@ -1,8 +1,11 @@
 package com.example.tlstool.service;
 
+import com.example.tlstool.entity.dto.ValidationResultDTO;
 import com.example.tlstool.entity.po.PathValidationResultPO;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.fasterxml.jackson.databind.JsonNode;
+
+import java.util.List;
 
 /**
 * @author admin
@@ -11,4 +14,6 @@ import com.fasterxml.jackson.databind.JsonNode;
 */
 public interface PathValidationResultService extends IService<PathValidationResultPO> {
     void savePahtValidationResultFromSslyze(JsonNode pathValidationResults, Long certificateDeploymentId);
+
+    List<ValidationResultDTO> getPathValidationResults(Long certificateDeploymentId);
 }
