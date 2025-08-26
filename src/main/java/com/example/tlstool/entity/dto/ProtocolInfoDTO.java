@@ -28,4 +28,6 @@ public class ProtocolInfoDTO {
      * 启用状态：0：未启用，1：启用
      */
     Integer accepted;
+
+    String remark;
 }

@@ -26,7 +26,18 @@
                starget.resolved_ip ip,
                starget.port port,
                css.tls_version tlsVersion,
-               css.is_accepted accepted
+               css.is_accepted accepted,
+               CASE
+                    WHEN css.tls_version = '​SSL_2_0'
+                    OR css.tls_version = '​SSL_3_0' THEN
+                    '已过时，存在严重漏洞（如 POODLE 攻击）'
+                    WHEN css.tls_version = 'TLS_1_0' THEN
+                    '不安全，易受 BEAST 攻击（CBC 模式漏洞）'
+                    WHEN css.tls_version = 'TLS_1_1' THEN
+                    '不安全，仍存在 CBC 模式缺陷，且缺乏现代加密支持'
+                    WHEN css.tls_version = 'TLS_1_2' OR css.tls_version = 'TLS_1_3' THEN
+                    '安全'
+                END AS remark
         FROM scan_task stask
                  RIGHT JOIN scan_target starget ON stask.task_id = starget.task_id
                  RIGHT JOIN cipher_suite_support css ON starget.target_id = css.target_id
