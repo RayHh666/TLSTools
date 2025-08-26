@@ -81,6 +81,40 @@ public class CertificateDetailServiceImpl extends ServiceImpl<CertificateDetailM
                     }
                 }
 
+                // 公钥加密算法安全性分析
+                String publicKeyAlgorithm = certificateDetail.findValue("public_key").findValue("algorithm").asText();
+                String publicKeyRemark = "此公钥加密算法符合当前安全标准";
+                switch (publicKeyAlgorithm) {
+                    case "RSAPublicKey":
+                        if (certificateDetail.findValue("public_key").findValue("key_size").asInt() < 2048) {
+                            publicKeyRemark = "RSA密钥长度小于2048位，已淘汰";
+                        }
+                        break;
+                    case "ECPublicKey":
+                        if ("secp192k1".equals(certificateDetail.findValue("public_key").findValue("ec_curve_name").asText())) {
+                            publicKeyRemark = "ECC密钥使用了弱曲线 secp192k1，应禁用";
+                        }
+                        break;
+                }
+
+                // 证书签名算法安全性分析
+                String signatureHashAlgorithmName = certificateDetail.findValue("signature_hash_algorithm").findValue("name").asText();
+                String signatureHashAlgorithmRemark = null;
+                switch (signatureHashAlgorithmName) {
+                    case "sha1":
+                        signatureHashAlgorithmRemark = "此证书使用了SHA-1弱哈希算法，建议升级为 SHA-2 系列（如 SHA-256、SHA-384）";
+                        break;
+                    case "md5":
+                        signatureHashAlgorithmRemark = "此证书使用了已淘汰的MD5算法，建议升级为 SHA-2 系列（如 SHA-256、SHA-384）";
+                        break;
+                    case "sha256":
+                        signatureHashAlgorithmRemark = "此证书使用了SHA-256哈希算法，符合当前安全标准";
+                        break;
+                    case "sha384":
+                        signatureHashAlgorithmRemark = "此证书使用了SHA-384哈希算法，符合当前安全标准";
+                        break;
+                }
+
                 CertificateDetailPO certificateDetailPO = new CertificateDetailPO().builder()
                         .asPem(certificateDetail.findValue("as_pem").asText())
                         .fingerprintSha1(certificateDetail.findValue("fingerprint_sha1").asText())
@@ -118,6 +152,8 @@ public class CertificateDetailServiceImpl extends ServiceImpl<CertificateDetailM
                         .certificateDeploymentId(certificateDeploymentId)
                         .pathValidationResultId(pathValidationResultId)
                         .certificateDetailIndex(index)
+                        .publicKeyRemark(publicKeyRemark)
+                        .signatureHashAlgorithmRemark(signatureHashAlgorithmRemark)
                         .build();
 
                 baseMapper.insert(certificateDetailPO);

@@ -91,11 +91,17 @@
                public_key_algorithm AS publicKeyAlgorithm,
                public_key_key_size AS publicKeySize,
                signature_hash_algorithm_name AS signatureHashAlgorithmName,
-               ocsp_response_is_trusted,
-               ocsp_response_response_status,
+               ocsp_response_is_trusted AS ocspResponseIsTrusted,
+               IFNULL(ocsp_response_response_status, 'OCSP未响应') AS ocspResponseResponseStatus,
                cdetail.certificate_detail_index AS certificateDetailIndex,
                cdetail.path_validation_result_id AS pathValidationResultId,
-               cdetail.certificate_deployment_id AS certificateDeploymentId
+               cdetail.certificate_deployment_id AS certificateDeploymentId,
+               public_key_remark AS publicKeyRemark,
+               signature_hash_algorithm_remark AS signatureHashAlgorithmRemark,
+                CASE
+                    WHEN NOW() BETWEEN not_valid_before AND not_valid_after THEN '证书在生效'
+                    ELSE '证书已过期'
+                END AS expired
         FROM scan_task stask
                  RIGHT JOIN scan_target starget ON stask.task_id = starget.task_id
                  RIGHT JOIN certificate_deployment cdeployment ON cdeployment.target_id = starget.target_id

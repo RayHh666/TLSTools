@@ -1,5 +1,6 @@
 package com.example.tlstool.entity.dto;
 
+import com.baomidou.mybatisplus.annotation.TableField;
 import lombok.Data;
 
 import java.time.LocalDateTime;
@@ -70,12 +71,12 @@ public class CertificateInfoDTO {
     /**
      * ocsp响应是否被信任
      */
-    String ocsp_response_is_trusted;
+    String ocspResponseIsTrusted;
 
     /**
      * ocsp响应状态
      */
-    String ocsp_response_response_status;
+    String ocspResponseResponseStatus;
 
     /**
      * 验证链索引
@@ -91,4 +92,19 @@ public class CertificateInfoDTO {
      * 证书部署链
      */
     Long certificateDeploymentId;
+
+    /**
+     * 公钥加密算法安全性评估
+     */
+    String publicKeyRemark;
+
+    /**
+     * 签名算法安全性评估
+     */
+    String signatureHashAlgorithmRemark;
+
+    /**
+     * 是否生效
+     */
+    String expired;
 }

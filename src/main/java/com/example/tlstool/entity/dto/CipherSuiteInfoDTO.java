@@ -31,4 +31,8 @@ public class CipherSuiteInfoDTO {
      */
     String opensslName;
 
+    /**
+     * 安全评估
+     */
+    String remark;
 }
