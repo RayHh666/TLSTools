@@ -2,6 +2,8 @@ package com.example.tlstool.util;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -11,6 +13,8 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+
+import static com.alibaba.druid.util.MySqlUtils.GBK;
 
 @Slf4j
 public class SslyzeUtils {
@@ -132,21 +136,23 @@ public class SslyzeUtils {
             ProcessBuilder builder = new ProcessBuilder();
 
             String osName = System.getProperty("os.name").toLowerCase();
-
+            Charset charset = null;
            if (osName.contains("windows")) {
                 //windowssystem
                 sslyzeCommand = "python -m" + sslyzeCommand;
                 builder.command("cmd", "/c", sslyzeCommand);
+                charset = GBK;
            } else {
                //Other systems
                builder.command("bash", "-c", sslyzeCommand);
+               charset = StandardCharsets.UTF_8;
            }
 
             //Standard errors will be merged with standard outputs
             builder.redirectErrorStream(true);
             Process process = builder.start();
 
-            BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream(),"GBK"));
+            BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream(), charset));
             String line;
             while ((line = reader.readLine()) != null) {
                 result.append(line);
