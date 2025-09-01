@@ -1,5 +1,6 @@
 package com.example.tlstool.entity.vo;
 
+import com.example.tlstool.entity.dto.HttpUpgradeResultDTO;
 import com.example.tlstool.entity.po.HttpUpgradeResultPO;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -11,7 +12,7 @@ import java.util.List;
 @NoArgsConstructor
 public class HttpUpgradeResultVO {
 
-    private List<HttpUpgradeResultPO> httpUpgradeResultPOList;
+    private List<HttpUpgradeResultDTO> httpUpgradeResultDTOList;
 
     private Integer total;
 }

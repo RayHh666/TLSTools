@@ -20,7 +20,7 @@ public class ConnectionDetailServiceImpl extends ServiceImpl<ConnectionDetailMap
     @Async
     @Override
     public void saveConnectionDetail(JsonNode connectivityResult, Long targetId) {
-        if (connectivityResult != null) {
+        if (connectivityResult != null && !connectivityResult.isNull()) {
             ConnectionDetailPO connectionDetailPO = new ConnectionDetailPO().builder()
                     .targetId(targetId)
                     .highestTlsVersion(connectivityResult.get("highest_tls_version_supported").asText())

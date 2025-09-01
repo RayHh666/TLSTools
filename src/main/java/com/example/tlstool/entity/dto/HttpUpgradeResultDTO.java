@@ -1,5 +1,6 @@
 package com.example.tlstool.entity.dto;
 
+import com.baomidou.mybatisplus.annotation.TableField;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -11,6 +12,11 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class HttpUpgradeResultDTO {
     /**
+     * 目标
+     */
+    String target;
+
+    /**
      * 是否重定向至https
      */
     Boolean status;
@@ -19,4 +25,9 @@ public class HttpUpgradeResultDTO {
      * 最终url
      */
     String location;
+
+    /**
+     * 错误信息
+     */
+    String errorMessage;
 }

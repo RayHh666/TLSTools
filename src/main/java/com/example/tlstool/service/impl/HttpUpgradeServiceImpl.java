@@ -1,6 +1,7 @@
 package com.example.tlstool.service.impl;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.example.tlstool.entity.dto.HttpUpgradeResultDTO;
 import com.example.tlstool.entity.dto.VulnerabilityDetectionResultDTO;
 import com.example.tlstool.entity.po.HttpUpgradeResultPO;
 import com.example.tlstool.entity.po.ScanTargetPO;
@@ -23,9 +24,9 @@ public class HttpUpgradeServiceImpl extends ServiceImpl<HttpUpgradeMapper, HttpU
 
         HttpUpgradeResultVO httpUpgradeResultVO = new HttpUpgradeResultVO();
         int offset = (page - 1) * size;
-        List<HttpUpgradeResultPO> httpUpgradeResultPOList = baseMapper.getHttpRedirectionResultList(taskId, count, offset, size);
+        List<HttpUpgradeResultDTO> httpUpgradeResultDTOList = baseMapper.getHttpRedirectionResultList(taskId, count, offset, size);
         Integer total = baseMapper.getHttpRedirectionResultTotal(taskId, count);
-        httpUpgradeResultVO.setHttpUpgradeResultPOList(httpUpgradeResultPOList);
+        httpUpgradeResultVO.setHttpUpgradeResultDTOList(httpUpgradeResultDTOList);
         httpUpgradeResultVO.setTotal(total);
         return httpUpgradeResultVO;
     }

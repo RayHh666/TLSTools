@@ -33,7 +33,7 @@ public class CertificateDeploymentServiceImpl extends ServiceImpl<CertificateDep
     @Async
     @Override
     public void saveCertificateDeployment(JsonNode certificateDeployments, Long targetId) {
-        if(certificateDeployments != null) {
+        if(certificateDeployments != null && !certificateDeployments.isNull()) {
             if (certificateDeployments.isArray()) {
                 Integer index = 0;
                 for (JsonNode certificateDeployment : certificateDeployments) {

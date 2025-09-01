@@ -34,7 +34,7 @@ public class CertificateDetailServiceImpl extends ServiceImpl<CertificateDetailM
     @Async
     @Override
     public void saveCertificateDetailFromSslyze(JsonNode certificateDetails, Long certificateDeploymentId, Long pathValidationResultId) {
-        if (certificateDetails != null && certificateDetails.isArray()) {
+        if (certificateDetails != null && !certificateDetails.isNull() && certificateDetails.isArray()) {
             Integer index = 0;
             for (JsonNode certificateDetail : certificateDetails) {
 
@@ -52,7 +52,7 @@ public class CertificateDetailServiceImpl extends ServiceImpl<CertificateDetailM
                 String issuerCommonName = null;
 
                 JsonNode subjectAttributes = certificateDetail.findValue("subject").findValue("attributes");
-                if (subjectAttributes != null && subjectAttributes.isArray()) {
+                if (subjectAttributes != null && !subjectAttributes.isNull() && subjectAttributes.isArray()) {
                     for (JsonNode subjectAttribute : subjectAttributes) {
                         if ("countryName".equals(subjectAttribute.findValue("oid").findValue("name").asText())) {
                             subjectCountry = subjectAttribute.findValue("value").asText();
@@ -123,6 +123,27 @@ public class CertificateDetailServiceImpl extends ServiceImpl<CertificateDetailM
                         break;
                 }
 
+                Integer publicKeyKeySize = null;
+                Long publicKeyRsaE = null;
+                Long publicKeyRsaN = null;
+                Long publicKeyEcX = null;
+                Long publicKeyEcY = null;
+                if (certificateDetail.findValue("public_key").findValue("key_size") != null && !certificateDetail.findValue("public_key").findValue("key_size").isNull()){
+                    publicKeyKeySize = certificateDetail.findValue("public_key").findValue("key_size").asInt();
+                }
+                if (certificateDetail.findValue("public_key").findValue("rsa_e") != null && !certificateDetail.findValue("public_key").findValue("rsa_e").isNull()){
+                    publicKeyRsaE = certificateDetail.findValue("public_key").findValue("rsa_e").asLong();
+                }
+                if (certificateDetail.findValue("public_key").findValue("rsa_n") != null && !certificateDetail.findValue("public_key").findValue("rsa_n").isNull()){
+                    publicKeyRsaN = certificateDetail.findValue("public_key").findValue("rsa_n").asLong();
+                }
+                if (certificateDetail.findValue("public_key").findValue("ec_x") != null && !certificateDetail.findValue("public_key").findValue("ec_x").isNull()) {
+                    publicKeyEcX = certificateDetail.findValue("public_key").findValue("ec_x").asLong();
+                }
+                if (certificateDetail.findValue("public_key").findValue("ec_y") != null && !certificateDetail.findValue("public_key").findValue("ec_y").isNull()) {
+                    publicKeyEcY = certificateDetail.findValue("public_key").findValue("ec_y").asLong();
+                }
+
                 CertificateDetailPO certificateDetailPO = new CertificateDetailPO().builder()
                         .asPem(certificateDetail.findValue("as_pem").asText())
                         .fingerprintSha1(certificateDetail.findValue("fingerprint_sha1").asText())
@@ -150,12 +171,12 @@ public class CertificateDetailServiceImpl extends ServiceImpl<CertificateDetailM
                         .issuerCommonName(issuerCommonName)
                         .issuerRfc4514String(certificateDetail.findValue("issuer").findValue("rfc4514_string").asText())
                         .publicKeyAlgorithm(certificateDetail.findValue("public_key").findValue("algorithm").asText())
-                        .publicKeyKeySize(certificateDetail.findValue("public_key").findValue("key_size").asInt())
-                        .publicKeyRsaE(certificateDetail.findValue("public_key").findValue("rsa_e").asLong())
-                        .publicKeyRsaN(certificateDetail.findValue("public_key").findValue("rsa_n").asLong())
+                        .publicKeyKeySize(publicKeyKeySize)
+                        .publicKeyRsaE(publicKeyRsaE)
+                        .publicKeyRsaN(publicKeyRsaN)
                         .publicKeyEcCurveName(certificateDetail.findValue("public_key").findValue("ec_curve_name").asText())
-                        .publicKeyEcX(certificateDetail.findValue("public_key").findValue("ec_x").asLong())
-                        .publicKeyEcY(certificateDetail.findValue("public_key").findValue("ec_y").asLong())
+                        .publicKeyEcX(publicKeyEcX)
+                        .publicKeyEcY(publicKeyEcY)
                         .createdAt(LocalDateTime.now())
                         .certificateDeploymentId(certificateDeploymentId)
                         .pathValidationResultId(pathValidationResultId)

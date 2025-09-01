@@ -16,10 +16,8 @@
         http_upgrade_result_id,target_id,status,location,errorMessage
     </sql>
 
-    <select id="getHttpRedirectionResultList" resultType="com.example.tlstool.entity.po.HttpUpgradeResultPO">
+    <select id="getHttpRedirectionResultList" resultType="com.example.tlstool.entity.dto.HttpUpgradeResultDTO">
         SELECT
-            hur.http_upgrade_result_id,
-            hur.target_id,
             hur.target,
             hur.`status`,
             hur.location,
@@ -33,7 +31,7 @@
         <if test="count != null">
             AND starget.count = #{count}
         </if>
-        ORDER BY target_id
+        ORDER BY starget.target_id
         LIMIT #{offset}, #{size};
     </select>
 
